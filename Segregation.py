@@ -11,7 +11,6 @@ import itertools
 import random
 import copy
 
-
 # I used Chat GPT to debug certain lines of code that I wrote.
 class Schelling:
     def __init__(self, width, height, empty_ratio, similarity_threshold, n_iterations, colors=2):
