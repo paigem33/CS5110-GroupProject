@@ -12,7 +12,6 @@ import itertools
 import random
 import copy
 
-
 class Schelling:
     def __init__(self, width, height, empty_ratio, similarity_threshold, n_iterations, colors=2):
         self.agents = None
