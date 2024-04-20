@@ -7,6 +7,7 @@ class Agent:
         self.fallen = False                     # all agents begin standing up
         self.timesTrampled = 0                  # if the agent gets trampled twice they die, according to the study
         self.alive = True                       # all agents begin alive... of course
+        self.position = { 'x': 0, 'y': 0 }
 
     # Function that uses crowd density to determine whether the person is rational or irrational
     # crowdDensity: a float (0 <= crowdDensity <= 1) that represents the ratio of empty spaces to full spaces around the Player

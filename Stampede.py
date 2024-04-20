@@ -45,6 +45,8 @@ class Stampede:
 
                 if self.agents[y][x] == '':
                     self.agents[y][x] = newAgent  # fill a random "empty" spot in the array with a new agent
+                    newAgent.position['x'] = x
+                    newAgent.position['y'] = y
                     break
 
         # Print the array for funsies
@@ -73,7 +75,22 @@ class Stampede:
                 break
 
     def plot(self, title, file_name):
-        # TODO: PLOT THE AGENTS ON THE GRAPH
+        fig, ax = plt.subplots()
+        agent_colors = {1: 'b', 2: 'r'}
+        marker_size = 150 / self.width # no logic here, I just played around with it
+        for row in self.agents:
+            for agent in row:
+                if (agent != ''):
+                    print("agent is: ", agent)
+                    ax.scatter(agent.position['x'] + 0.5, agent.position['y'] + 0.5, s=marker_size, color='r') # TODO: CHANGE THIS TO BE COLORED BASED ON AGENT, NOT JUST RED ACROSS THE BOARD
+
+        ax.set_title(title, fontsize=10, fontweight='bold')
+        ax.set_xlim([0, self.width])
+        ax.set_ylim([0, self.height])
+        ax.set_xticks([])
+        ax.set_yticks([])
+        plt.savefig(file_name)
+
         return
 
 
@@ -83,7 +100,7 @@ def main():
     stampede = Stampede(5, 5, 0.3, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
     stampede.populate()
 
-    # stampede.plot('Stampede Model: Initial State', 'stampede_initial.png')
+    stampede.plot('Stampede Model: Initial State', 'stampede_initial.png')
 
     # stampede.move_locations()
 
