@@ -76,13 +76,18 @@ class Stampede:
 
     def plot(self, title, file_name):
         fig, ax = plt.subplots()
-        agent_colors = {1: 'b', 2: 'r'}
+        # agent_colors = {1: 'b', 2: 'r'}
+        agentColor = 'r'
         marker_size = 150 / self.width # no logic here, I just played around with it
         for row in self.agents:
             for agent in row:
                 if (agent != ''):
                     print("agent is: ", agent)
-                    ax.scatter(agent.position['x'] + 0.5, agent.position['y'] + 0.5, s=marker_size, color='r') # TODO: CHANGE THIS TO BE COLORED BASED ON AGENT, NOT JUST RED ACROSS THE BOARD
+                    if agent.fallen:
+                        agentColor = 'b'
+                    if not agent.alive:
+                        agentColor = 'g'
+                    ax.scatter(agent.position['x'] + 0.5, agent.position['y'] + 0.5, s=marker_size, color=agentColor) # TODO: CHANGE THIS TO BE COLORED BASED ON AGENT, NOT JUST RED ACROSS THE BOARD
 
         ax.set_title(title, fontsize=10, fontweight='bold')
         ax.set_xlim([0, self.width])
