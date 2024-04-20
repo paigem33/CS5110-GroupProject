@@ -14,7 +14,7 @@ import copy
 from Agent import Agent
 
 class Stampede:
-    def __init__(self, width, height, fullRatio, n_iterations, weightDistribution, goal):
+    def __init__(self, width, height, fullRatio, n_iterations, weightDistribution, goalIndices):
         # self.agents = []                              # array: holds all agents               # TODO: RIGHT NOW THIS IS AN ARRAY, USED TO BE STORED IN {}; DECIDE IF THIS IS A GOOD DECISION OR IF IT SHOULD BE {}
         self.width = width                              # int: width of the grid I think
         self.height = height                            # int: height of the grid I think
@@ -22,7 +22,7 @@ class Stampede:
         self.fullRatio = fullRatio                      # float
         self.n_iterations = n_iterations                # int
         self.weightDistribution = weightDistribution    # dictionary: { "mean": int, "sd": int }
-        self.goal = goal                                # dictionary: { "x1": int, "y1": int, "x2": int, "y2" }
+        self.goalIndices = goalIndices                  # dictionary: { "x1": int, "y1": int, "x2": int, "y2" }
                                                             # (x1, y1) and (x2, y2) are the indices at either side of the "goal" indices that everybdy wants to get to
 
     def populate(self):
