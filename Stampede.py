@@ -98,6 +98,223 @@ class Stampede:
         plt.savefig(file_name)
 
         return
+    
+    def play_normal_form_game(self, agent1, agent2):
+        if agent1.isRational() and agent1.weight < agent2.weight and agent2.isRational() and agent2.weight > agent1.weight:
+            # Outcome for you: rational, weak; he: rational, strong
+            outcomes = {
+                ('queue', 'queue'): (0.8, 0.8),
+                ('queue', 'push'): (0.2, 0.3),
+                ('push', 'queue'): (0.2, 0.7),
+                ('push', 'push'): (0.1, 0.3)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+        
+        if agent1.isRational() and agent1.weight > agent2.weight and agent2.isRational() and agent2.weight < agent1.weight:
+            # Outcome for you: rational, strong; he: rational, weak
+            outcomes = {
+                ('queue', 'queue'): (0.7, 0.8),
+                ('queue', 'push'): (0.2, 0.3),
+                ('push', 'queue'): (0.5, 0.6),
+                ('push', 'push'): (0.4, 0.1)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if not agent1.isRational() and not agent2.isRational() and agent1.weight < agent2.weight:
+            # Outcome for you: irrational, weak; he: irrational, strong
+            outcomes = {
+                ('queue', 'queue'): (0.4, 0.3),
+                ('queue', 'push'): (0.1, 0.5),
+                ('push', 'queue'): (0.5, 0.3),
+                ('push', 'push'): (0.7, 0.5)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if not agent1.isRational() and not agent2.isRational() and agent1.weight > agent2.weight:
+            # Outcome for you: irrational, strong; he: irrational, weak
+            outcomes = {
+                ('queue', 'queue'): (0.3, 0.4),
+                ('queue', 'push'): (0.1, 0.5),
+                ('push', 'queue'): (0.7, 0.3),
+                ('push', 'push'): (0.7, 0.5)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if not agent1.isRational() and agent2.isRational() and agent2.weight > agent1.weight:
+            # Outcome for you: irrational, weak; he: rational, strong
+            outcomes = {
+                ('queue', 'queue'): (0.4, 0.9),
+                ('queue', 'push'): (0.1, 0.4),
+                ('push', 'queue'): (0.5, 0.8),
+                ('push', 'push'): (0.5, 0.4)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if not agent1.isRational() and agent2.isRational() and agent2.weight < agent1.weight:
+            # Outcome for you: irrational, strong; he: rational, weak
+            outcomes = {
+                ('queue', 'queue'): (0.3, 0.8),
+                ('queue', 'push'): (0.3, 0.4),
+                ('push', 'queue'): (0.7, 0.5),
+                ('push', 'push'): (0.6, 0.3)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if agent1.isRational() and not agent2.isRational() and agent1.weight > agent2.weight:
+            # Outcome for you: rational, strong; he: irrational, weak
+            outcomes = {
+                ('queue', 'queue'): (0.7, 0.4),
+                ('queue', 'push'): (0.3, 0.5),
+                ('push', 'queue'): (0.5, 0.3),
+                ('push', 'push'): (0.5, 0.4)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if agent1.isRational() and not agent2.isRational() and agent1.weight < agent2.weight:
+            # Outcome for you: rational, weak; he: irrational, strong
+            outcomes = {
+                ('queue', 'queue'): (0.8, 0.3),
+                ('queue', 'push'): (0.3, 0.7),
+                ('push', 'queue'): (0.3, 0.4),
+                ('push', 'push'): (0.1, 0.6)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if agent1.isRational() and agent2.isRational() and agent1.weight == agent2.weight:
+            # Outcome for you: rational; he: rational; Strong or weak
+            outcomes = {
+                ('queue', 'queue'): (0.9, 0.9),
+                ('queue', 'push'): (0.2, 0.3),
+                ('push', 'queue'): (0.3, 0.7),
+                ('push', 'push'): (0.1, 0.1)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if agent1.isRational() and not agent2.isRational() and agent1.weight == agent2.weight:
+            # Outcome for you: rational; he: irrational; Strong or weak
+            outcomes = {
+                ('queue', 'queue'): (0.8, 0.4),
+                ('queue', 'push'): (0.3, 0.6),
+                ('push', 'queue'): (0.5, 0.3),
+                ('push', 'push'): (0.2, 0.5)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if not agent1.isRational() and agent2.isRational() and agent1.weight == agent2.weight:
+            # Outcome for you: irrational; he: rational; Strong or weak
+            outcomes = {
+                ('queue', 'queue'): (0.4, 0.8),
+                ('queue', 'push'): (0.6, 0.3),
+                ('push', 'queue'): (0.3, 0.5),
+                ('push', 'push'): (0.5, 0.2)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if not agent1.isRational() and not agent2.isRational() and agent1.weight == agent2.weight:
+            # Outcome for you: irrational; he: irrational; Strong or weak
+            outcomes = {
+                ('queue', 'queue'): (0.4, 0.4),
+                ('queue', 'push'): (0.1, 0.5),
+                ('push', 'queue'): (0.6, 0.4),
+                ('push', 'push'): (0.6, 0.6)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
 
 
 def main():
