@@ -46,7 +46,7 @@ class Stampede:
     def is_unblocked(self, grid, row, col):
         return self.agents
 
-    # Check if a cell is the destination
+    # Check if a cell is the destinations
     def is_destination(self, row, col, dest):
         return row == dest[0] and col == dest[1]
     
