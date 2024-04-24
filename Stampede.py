@@ -13,6 +13,15 @@ import random
 import copy
 from Agent import Agent
 
+class Cell:
+    def __init__(self):
+        self.parent_i = 0  # Parent cell's row index
+        self.parent_j = 0  # Parent cell's column index
+        self.f = float('inf')  # Total cost of the cell (g + h)
+        self.g = float('inf')  # Cost from start to this cell
+        self.h = 0  # Heuristic cost from this cell to destination
+
+
 class Stampede:
     def __init__(self, width, height, fullRatio, n_iterations, weightDistribution):
         # self.agents = []                              # array: holds all agents               # TODO: RIGHT NOW THIS IS AN ARRAY, USED TO BE STORED IN {}; DECIDE IF THIS IS A GOOD DECISION OR IF IT SHOULD BE {}
