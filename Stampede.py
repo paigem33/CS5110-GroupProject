@@ -14,7 +14,7 @@ import copy
 from Agent import Agent
 
 class Stampede:
-    def __init__(self, width, height, fullRatio, n_iterations, weightDistribution, goalIndices):
+    def __init__(self, width, height, fullRatio, n_iterations, weightDistribution):
         # self.agents = []                              # array: holds all agents               # TODO: RIGHT NOW THIS IS AN ARRAY, USED TO BE STORED IN {}; DECIDE IF THIS IS A GOOD DECISION OR IF IT SHOULD BE {}
         self.width = width                              # int: width of the grid I think
         self.height = height                            # int: height of the grid I think
@@ -22,9 +22,8 @@ class Stampede:
         self.fullRatio = fullRatio                      # float
         self.n_iterations = n_iterations                # int
         self.weightDistribution = weightDistribution    # dictionary: { "mean": int, "sd": int }
-        self.goalIndices = goalIndices                  # dictionary: { "x1": int, "y1": int, "x2": int, "y2" }
-                                                            # (x1, y1) and (x2, y2) are the indices at either side of the "goal" indices that everybdy wants to get to
-        
+        # all agents just need to get to row 0
+
     # Check if a cell is valid (aka within the grid)
     def is_valid(self, row, col):
         return 0 <= row < self.width and 0 <= col < self.height
@@ -155,9 +154,6 @@ class Stampede:
                     newAgent.position['y'] = y
                     break
 
-        # Print the array for funsies
-        print("self.agents is: ", self.agents)
-
     def calculateCrowdDensity(self):
         # TODO: DETERMINE THE RATIO OF EMPTY SPACES TO OCCUPIED SPACES AROUND THE PLAYER
         # I'M THINKING THIS SHOULD BE FOR AT LEAST TWO RINGS AROUND THE PLAYER, IF NOT THREE
@@ -172,6 +168,7 @@ class Stampede:
             n_changes = 0
             
             for agent in self.old_agents: # each player moves one-by-one
+                # use a* algorithm 
                 # TODO: PLAY A NORMAL-FORM GAME TO DETERMINE IF AGENT QUEUES/PUSHES, AND THUS IF PLAYER MOVES OR NOT, AND IF PLAYER FALLS OR NOT
                     # can use calculateCrowdDensity() to determine the crowd density around an agent
                     # then use agent.isRational(crowdDensity) to determine whether that agent is going to be rational or irrational
@@ -424,7 +421,7 @@ class Stampede:
 def main():
     ##Starter Simulation
     weightDistribution = {"mean": 160, "sd": 20}  # not facts idk what weight distribution is
-    stampede = Stampede(10, 10, 0.7, 200, weightDistribution, {"x1": 1, "y1": 2, "x2": 3, "y2": 4})  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
+    stampede = Stampede(10, 10, 0.7, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
     stampede.populate()
 
     stampede.plot('Stampede Model: Initial State', 'stampede_initial.png')
