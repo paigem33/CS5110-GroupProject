@@ -17,10 +17,6 @@ class A_Star:
     def __init__(self, row, col):
         self.ROW = row
         self.COL = col
-
-# Define the size of the grid
-# ROW = 9
-# COL = 10
  
     # Check if a cell is valid (within the grid)
     def is_valid(self, row, col):

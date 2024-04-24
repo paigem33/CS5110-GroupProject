@@ -93,6 +93,7 @@ class Stampede:
                         firstStep = self.get_first_step(agent)
 
                         if firstStep == None: # if the agent can't find a path to where they want to go
+                            # move forward, or if you can't, then vvv
                             # play a normal-form game with the person in front of them
                             continue
                         else:
@@ -101,6 +102,8 @@ class Stampede:
                 # have players use a* to get to destination. 
                 # if a* has no way of getting to destination, then have players play normal-form game with person in front of them 
                     # to see whether they push the person in front of them or queue
+                    # if they push the person in front of them and that person queues, and they're stronger than the person they pushed, 
+                    # then the players switch spots (and the weaker person is marked as fallen?)
 
                 # TODO: PLAY A NORMAL-FORM GAME TO DETERMINE IF AGENT QUEUES/PUSHES, AND THUS IF PLAYER MOVES OR NOT, AND IF PLAYER FALLS OR NOT
                     # can use calculateCrowdDensity() to determine the crowd density around an agent
