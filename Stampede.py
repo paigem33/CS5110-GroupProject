@@ -71,7 +71,7 @@ class Stampede:
         # calculate the shortest path from this
         A_star = A_Star(self.height, self.width)
         print(A_star.ROW, A_star.COL)
-        firstStep = A_star.a_star_search(self.a_star_copy, [self.height - 1, self.width - 1], [0,0])
+        firstStep = A_star.a_star_search(self.a_star_copy, [self.height - 1, self.width - 1])
         print("first step is: ", firstStep)
 
     def move_locations(self):
