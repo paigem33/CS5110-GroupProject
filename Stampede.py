@@ -96,7 +96,7 @@ class Stampede:
                             # play a normal-form game with the person in front of them
                             continue
                         else:
-                            print("agent's first step is: ", firstStep)
+                            print("agent's first step is: ", firstStep) # this is in row, col order, so it'll look backwards to us
                 
                 # have players use a* to get to destination. 
                 # if a* has no way of getting to destination, then have players play normal-form game with person in front of them 

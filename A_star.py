@@ -66,8 +66,8 @@ class A_Star:
     # this function returns the first step in the path (that isn't the cell the agent is already in)
     def first_step_of_path(self, cell_details, dest):
         path = []
-        row = dest[1]
-        col = dest[0]
+        row = dest[0]
+        col = dest[1]
     
         # Trace the path from destination to source using parent cells
         while not (cell_details[row][col].parent_i == row and cell_details[row][col].parent_j == col):
@@ -81,7 +81,6 @@ class A_Star:
         path.append((row, col))
         # Reverse the path to get the path from source to destination
         path.reverse()
-        return path[1]
     
     # Implement the A* search algorithm
     # takes only grid and starting point as params, will find fastest to row 0 around the obstacles
