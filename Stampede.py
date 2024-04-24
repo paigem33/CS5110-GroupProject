@@ -1,4 +1,3 @@
-
 '''
 Author : Adil Moujahid
 Email : adil.mouja@gmail.com
@@ -82,7 +81,7 @@ class Stampede:
 
         # Initialize the open list (cells to be visited) with the start cell
         open_list = []
-        heapq.heappush(open_list, (0.0, i, j))
+        self.heapq.heappush(open_list, (0.0, i, j))
 
         # Initialize the flag for whether destination is found
         found_dest = False
@@ -90,7 +89,7 @@ class Stampede:
         # Main loop of A* search algorithm
         while len(open_list) > 0:
             # Pop the cell with the smallest f value from the open list
-            p = heapq.heappop(open_list)
+            p = self.heapq.heappop(open_list)
 
             # Mark the cell as visited
             i = p[1]
@@ -125,7 +124,7 @@ class Stampede:
                         # If the cell is not in the open list or the new f value is smaller
                         if cell_details[new_i][new_j].f == float('inf') or cell_details[new_i][new_j].f > f_new:
                             # Add the cell to the open list
-                            heapq.heappush(open_list, (f_new, new_i, new_j))
+                            self.heapq.heappush(open_list, (f_new, new_i, new_j))
                             # Update the cell details
                             cell_details[new_i][new_j].f = f_new
                             cell_details[new_i][new_j].g = g_new
@@ -434,6 +433,8 @@ def main():
     stampede.populate()
 
     stampede.plot('Stampede Model: Initial State', 'stampede_initial.png')
+
+    stampede.a_star_search(stampede.agents, [5,5], [0,0])
 
     # stampede.move_locations()
 
