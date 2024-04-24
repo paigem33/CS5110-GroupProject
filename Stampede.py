@@ -11,7 +11,7 @@ import itertools
 import random
 import copy
 from Agent import Agent
-from A_star import Cell
+from A_star import Cell, A_Star
 
 class Stampede:
     def __init__(self, width, height, fullRatio, n_iterations, weightDistribution):
@@ -66,9 +66,12 @@ class Stampede:
                 else:
                     self.a_star_copy[i][j] = 1
         
-        # calculate the shortest path from this
+        print("shortest path copy is: ", self.a_star_copy)
         
-
+        # calculate the shortest path from this
+        A_star = A_Star(self.height, self.width) # TODO: THIS MIGHT BE GIVING THE WRONG VAL.S FOR ROW, COL
+        firstStep = A_star.a_star_search(self.a_star_copy, [self.height - 1, self.width - 1], [0,0])
+        print("first step is: ", firstStep)
 
     def move_locations(self):
         total_distance = 0
@@ -334,12 +337,12 @@ class Stampede:
 def main():
     ##Starter Simulation
     weightDistribution = {"mean": 160, "sd": 20}  # not facts idk what weight distribution is
-    stampede = Stampede(10, 10, 0.7, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
+    stampede = Stampede(10, 10, 0.1, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
     stampede.populate()
 
     stampede.plot('Stampede Model: Initial State', 'stampede_initial.png')
 
-    stampede.a_star_search(stampede.agents, [5,5], [0,0])
+    stampede.calculate_shortest_path()
 
     # stampede.move_locations()
 
