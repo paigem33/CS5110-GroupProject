@@ -1,3 +1,4 @@
+
 '''
 Author : Adil Moujahid
 Email : adil.mouja@gmail.com
@@ -10,34 +11,20 @@ import matplotlib.pyplot as plt
 import itertools
 import random
 import copy
-import heapq
 from Agent import Agent
 
-
-class Cell:
-    def __init__(self):
-        self.parent_i = 0  # Parent cell's row index
-        self.parent_j = 0  # Parent cell's column index
-        self.f = float('inf')  # Total cost of the cell (g + h)
-        self.g = float('inf')  # Cost from start to this cell
-        self.h = 0  # Heuristic cost from this cell to destination
-
-
 class Stampede:
-    def __init__(self, width, height, fullRatio, n_iterations, weightDistribution):
-        self.parent_i = 0  # Parent cell's row index
-        self.parent_j = 0  # Parent cell's column index
-        self.f = float('inf')  # Total cost of the cell (g + h)
-        self.g = float('inf')  # Cost from start to this cell
-        self.h = 0  # Heuristic cost from this cell to destination
-        self.agents = []  # array: holds all agents               # TODO: RIGHT NOW THIS IS AN ARRAY, USED TO BE STORED IN {}; DECIDE IF THIS IS A GOOD DECISION OR IF IT SHOULD BE {}
-        self.width = width  # int: width of the grid I think
-        self.height = height  # int: height of the grid I think
+    def __init__(self, width, height, fullRatio, n_iterations, weightDistribution, goalIndices):
+        # self.agents = []                              # array: holds all agents               # TODO: RIGHT NOW THIS IS AN ARRAY, USED TO BE STORED IN {}; DECIDE IF THIS IS A GOOD DECISION OR IF IT SHOULD BE {}
+        self.width = width                              # int: width of the grid I think
+        self.height = height                            # int: height of the grid I think
         self.totalCells = width * height
-        self.fullRatio = fullRatio  # float
-        self.n_iterations = n_iterations  # int
-        self.weightDistribution = weightDistribution  # dictionary: { "mean": , "sd":  }
-
+        self.fullRatio = fullRatio                      # float
+        self.n_iterations = n_iterations                # int
+        self.weightDistribution = weightDistribution    # dictionary: { "mean": int, "sd": int }
+        self.goalIndices = goalIndices                  # dictionary: { "x1": int, "y1": int, "x2": int, "y2" }
+                                                            # (x1, y1) and (x2, y2) are the indices at either side of the "goal" indices that everybdy wants to get to
+        
     # Check if a cell is valid (aka within the grid)
     def is_valid(self, row, col):
         return 0 <= row < self.width and 0 <= col < self.height
@@ -152,19 +139,20 @@ class Stampede:
         # Fill the array with Agents
         for _ in range(numPlayerCells):
             while True:
-                agentWeight = random.gauss(self.weightDistribution["mean"], self.weightDistribution[
-                    "sd"])  # give the agent a normally-distributed weight based on given mean and sd
-                rational = True  # TODO: CHANGE THIS TO BE BASED ON SOMETHING, NOT JUST TRUE ACROSS THE BOARD?
-                stepTime = 1  # TODO: CHANGE THIS TO BE BASED ON SOMETHING, NOT JUST 1 FOR EVERY AGENT?
-                panicThreshold = 0.7  # TODO: CHANGE THIS TO BE BASED ON SOMETHING, NOT JUST 0.7 FOR EVERY AGENT?
-
-                newAgent = Agent(agentWeight, rational, stepTime, panicThreshold)
+                agentWeight = random.gauss(self.weightDistribution["mean"], self.weightDistribution["sd"])  # give the agent a normally-distributed weight based on given mean and sd
+                rational = True                 # TODO: CHANGE THIS TO BE BASED ON SOMETHING, NOT JUST TRUE ACROSS THE BOARD?
+                stepTime = 1                    # TODO: CHANGE THIS TO BE BASED ON SOMETHING, NOT JUST 1 FOR EVERY AGENT?
+                panicThreshold = 0.7            # TODO: CHANGE THIS TO BE BASED ON SOMETHING, NOT JUST 0.7 FOR EVERY AGENT?
+                
+                newAgent = Agent(agentWeight, rational, stepTime, panicThreshold) 
 
                 x = random.randint(0, self.width - 1)
                 y = random.randint(0, self.height - 1)
 
                 if self.agents[y][x] == '':
                     self.agents[y][x] = newAgent  # fill a random "empty" spot in the array with a new agent
+                    newAgent.position['x'] = x
+                    newAgent.position['y'] = y
                     break
 
         # Print the array for funsies
@@ -173,8 +161,8 @@ class Stampede:
     def calculateCrowdDensity(self):
         # TODO: DETERMINE THE RATIO OF EMPTY SPACES TO OCCUPIED SPACES AROUND THE PLAYER
         # I'M THINKING THIS SHOULD BE FOR AT LEAST TWO RINGS AROUND THE PLAYER, IF NOT THREE
-        # because just looking at the 9 squares immediately around a person doesn't seem like
-        # enough to cause a person to panic
+            # because just looking at the 9 squares immediately around a person doesn't seem like
+            # enough to cause a person to panic
         return
 
     def move_locations(self):
@@ -182,28 +170,264 @@ class Stampede:
         for i in range(self.n_iterations):
             self.old_agents = copy.deepcopy(self.agents)
             n_changes = 0
-
-            for agent in self.old_agents:  # each player moves one-by-one
+            
+            for agent in self.old_agents: # each player moves one-by-one
                 # TODO: PLAY A NORMAL-FORM GAME TO DETERMINE IF AGENT QUEUES/PUSHES, AND THUS IF PLAYER MOVES OR NOT, AND IF PLAYER FALLS OR NOT
-                # can use calculateCrowdDensity() to determine the crowd density around an agent
-                # then use agent.isRational(crowdDensity) to determine whether that agent is going to be rational or irrational
+                    # can use calculateCrowdDensity() to determine the crowd density around an agent
+                    # then use agent.isRational(crowdDensity) to determine whether that agent is going to be rational or irrational
                 continue
-
+            
             if n_changes == 0:
                 break
 
     def plot(self, title, file_name):
-        # TODO: PLOT THE AGENTS ON THE GRAPH
+        fig, ax = plt.subplots()
+        # agent_colors = {1: 'b', 2: 'r'}
+        agentColor = 'r'
+        marker_size = 150 / self.width # no logic here, I just played around with it
+        for row in self.agents:
+            for agent in row:
+                if (agent != ''):
+                    if agent.fallen:
+                        agentColor = 'b'
+                    if not agent.alive:
+                        agentColor = 'g'
+                    ax.scatter(agent.position['x'] + 0.5, agent.position['y'] + 0.5, s=marker_size, color=agentColor) # TODO: CHANGE THIS TO BE COLORED BASED ON AGENT, NOT JUST RED ACROSS THE BOARD
+
+        ax.set_title(title, fontsize=10, fontweight='bold')
+        ax.set_xlim([0, self.width])
+        ax.set_ylim([0, self.height])
+        ax.set_xticks([])
+        ax.set_yticks([])
+        plt.savefig(file_name)
+
         return
+    
+    def play_normal_form_game(self, agent1, agent2):
+        if agent1.isRational() and agent1.weight < agent2.weight and agent2.isRational() and agent2.weight > agent1.weight:
+            # Outcome for you: rational, weak; he: rational, strong
+            outcomes = {
+                ('queue', 'queue'): (0.8, 0.8),
+                ('queue', 'push'): (0.2, 0.3),
+                ('push', 'queue'): (0.2, 0.7),
+                ('push', 'push'): (0.1, 0.3)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+        
+        if agent1.isRational() and agent1.weight > agent2.weight and agent2.isRational() and agent2.weight < agent1.weight:
+            # Outcome for you: rational, strong; he: rational, weak
+            outcomes = {
+                ('queue', 'queue'): (0.7, 0.8),
+                ('queue', 'push'): (0.2, 0.3),
+                ('push', 'queue'): (0.5, 0.6),
+                ('push', 'push'): (0.4, 0.1)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if not agent1.isRational() and not agent2.isRational() and agent1.weight < agent2.weight:
+            # Outcome for you: irrational, weak; he: irrational, strong
+            outcomes = {
+                ('queue', 'queue'): (0.4, 0.3),
+                ('queue', 'push'): (0.1, 0.5),
+                ('push', 'queue'): (0.5, 0.3),
+                ('push', 'push'): (0.7, 0.5)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if not agent1.isRational() and not agent2.isRational() and agent1.weight > agent2.weight:
+            # Outcome for you: irrational, strong; he: irrational, weak
+            outcomes = {
+                ('queue', 'queue'): (0.3, 0.4),
+                ('queue', 'push'): (0.1, 0.5),
+                ('push', 'queue'): (0.7, 0.3),
+                ('push', 'push'): (0.7, 0.5)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if not agent1.isRational() and agent2.isRational() and agent2.weight > agent1.weight:
+            # Outcome for you: irrational, weak; he: rational, strong
+            outcomes = {
+                ('queue', 'queue'): (0.4, 0.9),
+                ('queue', 'push'): (0.1, 0.4),
+                ('push', 'queue'): (0.5, 0.8),
+                ('push', 'push'): (0.5, 0.4)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if not agent1.isRational() and agent2.isRational() and agent2.weight < agent1.weight:
+            # Outcome for you: irrational, strong; he: rational, weak
+            outcomes = {
+                ('queue', 'queue'): (0.3, 0.8),
+                ('queue', 'push'): (0.3, 0.4),
+                ('push', 'queue'): (0.7, 0.5),
+                ('push', 'push'): (0.6, 0.3)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if agent1.isRational() and not agent2.isRational() and agent1.weight > agent2.weight:
+            # Outcome for you: rational, strong; he: irrational, weak
+            outcomes = {
+                ('queue', 'queue'): (0.7, 0.4),
+                ('queue', 'push'): (0.3, 0.5),
+                ('push', 'queue'): (0.5, 0.3),
+                ('push', 'push'): (0.5, 0.4)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if agent1.isRational() and not agent2.isRational() and agent1.weight < agent2.weight:
+            # Outcome for you: rational, weak; he: irrational, strong
+            outcomes = {
+                ('queue', 'queue'): (0.8, 0.3),
+                ('queue', 'push'): (0.3, 0.7),
+                ('push', 'queue'): (0.3, 0.4),
+                ('push', 'push'): (0.1, 0.6)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if agent1.isRational() and agent2.isRational() and agent1.weight == agent2.weight:
+            # Outcome for you: rational; he: rational; Strong or weak
+            outcomes = {
+                ('queue', 'queue'): (0.9, 0.9),
+                ('queue', 'push'): (0.2, 0.3),
+                ('push', 'queue'): (0.3, 0.7),
+                ('push', 'push'): (0.1, 0.1)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if agent1.isRational() and not agent2.isRational() and agent1.weight == agent2.weight:
+            # Outcome for you: rational; he: irrational; Strong or weak
+            outcomes = {
+                ('queue', 'queue'): (0.8, 0.4),
+                ('queue', 'push'): (0.3, 0.6),
+                ('push', 'queue'): (0.5, 0.3),
+                ('push', 'push'): (0.2, 0.5)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if not agent1.isRational() and agent2.isRational() and agent1.weight == agent2.weight:
+            # Outcome for you: irrational; he: rational; Strong or weak
+            outcomes = {
+                ('queue', 'queue'): (0.4, 0.8),
+                ('queue', 'push'): (0.6, 0.3),
+                ('push', 'queue'): (0.3, 0.5),
+                ('push', 'push'): (0.5, 0.2)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
+
+        if not agent1.isRational() and not agent2.isRational() and agent1.weight == agent2.weight:
+            # Outcome for you: irrational; he: irrational; Strong or weak
+            outcomes = {
+                ('queue', 'queue'): (0.4, 0.4),
+                ('queue', 'push'): (0.1, 0.5),
+                ('push', 'queue'): (0.6, 0.4),
+                ('push', 'push'): (0.6, 0.6)
+            }
+            if agent1.isRational():
+                strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
+            else:
+                strategy1 = 'push'
+            if agent2.isRational():
+                strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
+            else:
+                strategy2 = 'push'
+            return outcomes[(strategy1, strategy2)]
 
 
 def main():
     ##Starter Simulation
     weightDistribution = {"mean": 160, "sd": 20}  # not facts idk what weight distribution is
-    stampede = Stampede(5, 5, 0.3, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
+    stampede = Stampede(10, 10, 0.7, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
     stampede.populate()
 
-    # stampede.plot('Stampede Model: Initial State', 'stampede_initial.png')
+    stampede.plot('Stampede Model: Initial State', 'stampede_initial.png')
 
     # stampede.move_locations()
 
