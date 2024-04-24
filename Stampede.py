@@ -209,6 +209,9 @@ class Stampede:
 
         return
     
+    # takes in two agents as params, agent1 and agent2
+    # returns the strategy for each in the same order they were passed in
+    # for example, play_normal_form_game(agent1, agent2) would return agent1Strategy, agent2Strategy
     def play_normal_form_game(self, agent1, agent2):
         if agent1.isRational() and agent1.weight < agent2.weight and agent2.isRational() and agent2.weight > agent1.weight:
             # Outcome for you: rational, weak; he: rational, strong
@@ -226,7 +229,7 @@ class Stampede:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
-            return outcomes[(strategy1, strategy2)]
+            return strategy1, strategy2
         
         if agent1.isRational() and agent1.weight > agent2.weight and agent2.isRational() and agent2.weight < agent1.weight:
             # Outcome for you: rational, strong; he: rational, weak
@@ -244,7 +247,7 @@ class Stampede:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
-            return outcomes[(strategy1, strategy2)]
+            return strategy1, strategy2
 
         if not agent1.isRational() and not agent2.isRational() and agent1.weight < agent2.weight:
             # Outcome for you: irrational, weak; he: irrational, strong
@@ -262,7 +265,7 @@ class Stampede:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
-            return outcomes[(strategy1, strategy2)]
+            return strategy1, strategy2
 
         if not agent1.isRational() and not agent2.isRational() and agent1.weight > agent2.weight:
             # Outcome for you: irrational, strong; he: irrational, weak
@@ -280,7 +283,7 @@ class Stampede:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
-            return outcomes[(strategy1, strategy2)]
+            return strategy1, strategy2
 
         if not agent1.isRational() and agent2.isRational() and agent2.weight > agent1.weight:
             # Outcome for you: irrational, weak; he: rational, strong
@@ -298,7 +301,7 @@ class Stampede:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
-            return outcomes[(strategy1, strategy2)]
+            return strategy1, strategy2
 
         if not agent1.isRational() and agent2.isRational() and agent2.weight < agent1.weight:
             # Outcome for you: irrational, strong; he: rational, weak
@@ -316,7 +319,7 @@ class Stampede:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
-            return outcomes[(strategy1, strategy2)]
+            return strategy1, strategy2
 
         if agent1.isRational() and not agent2.isRational() and agent1.weight > agent2.weight:
             # Outcome for you: rational, strong; he: irrational, weak
@@ -334,7 +337,7 @@ class Stampede:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
-            return outcomes[(strategy1, strategy2)]
+            return strategy1, strategy2
 
         if agent1.isRational() and not agent2.isRational() and agent1.weight < agent2.weight:
             # Outcome for you: rational, weak; he: irrational, strong
@@ -352,7 +355,7 @@ class Stampede:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
-            return outcomes[(strategy1, strategy2)]
+            return strategy1, strategy2
 
         if agent1.isRational() and agent2.isRational() and agent1.weight == agent2.weight:
             # Outcome for you: rational; he: rational; Strong or weak
@@ -370,7 +373,7 @@ class Stampede:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
-            return outcomes[(strategy1, strategy2)]
+            return strategy1, strategy2
 
         if agent1.isRational() and not agent2.isRational() and agent1.weight == agent2.weight:
             # Outcome for you: rational; he: irrational; Strong or weak
@@ -388,7 +391,7 @@ class Stampede:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
-            return outcomes[(strategy1, strategy2)]
+            return strategy1, strategy2
 
         if not agent1.isRational() and agent2.isRational() and agent1.weight == agent2.weight:
             # Outcome for you: irrational; he: rational; Strong or weak
@@ -406,7 +409,7 @@ class Stampede:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
-            return outcomes[(strategy1, strategy2)]
+            return strategy1, strategy2
 
         if not agent1.isRational() and not agent2.isRational() and agent1.weight == agent2.weight:
             # Outcome for you: irrational; he: irrational; Strong or weak
@@ -424,7 +427,7 @@ class Stampede:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
-            return outcomes[(strategy1, strategy2)]
+            return strategy1, strategy2
 
 
 def main():
