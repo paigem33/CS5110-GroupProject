@@ -69,7 +69,8 @@ class Stampede:
         print("shortest path copy is: ", self.a_star_copy)
         
         # calculate the shortest path from this
-        A_star = A_Star(self.height, self.width) # TODO: THIS MIGHT BE GIVING THE WRONG VAL.S FOR ROW, COL
+        A_star = A_Star(self.height, self.width)
+        print(A_star.ROW, A_star.COL)
         firstStep = A_star.a_star_search(self.a_star_copy, [self.height - 1, self.width - 1], [0,0])
         print("first step is: ", firstStep)
 
@@ -337,7 +338,7 @@ class Stampede:
 def main():
     ##Starter Simulation
     weightDistribution = {"mean": 160, "sd": 20}  # not facts idk what weight distribution is
-    stampede = Stampede(10, 10, 0.1, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
+    stampede = Stampede(10, 9, 0.1, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
     stampede.populate()
 
     stampede.plot('Stampede Model: Initial State', 'stampede_initial.png')

@@ -90,10 +90,11 @@ class A_Star:
             print("Source or destination is invalid")
             return
     
+        # Deemed unnecessary vvv because the agent will push people out of destination if necessary
         # Check if the source and destination are unblocked
-        if not self.is_unblocked(grid, src[0], src[1]) or not self.is_unblocked(grid, dest[0], dest[1]):
-            print("Source or the destination is blocked")
-            return
+        # if not self.is_unblocked(grid, src[0], src[1]) or not self.is_unblocked(grid, dest[0], dest[1]):
+        #     print("Source or the destination is blocked")
+        #     return
     
         # Check if we are already at the destination
         if self.is_destination(src[0], src[1], dest):
