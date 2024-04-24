@@ -57,7 +57,16 @@ class Stampede:
             # enough to cause a person to panic
         return
     
-    def calculate_shortest_path(self):
+
+    def print_a_star_copy(self):
+        print("a star copy: ")
+        for row in self.a_star_copy:
+            print(row)
+    
+    # this function takes one agent as a parameter
+    # if it can find the first step the player should take, it returns a tuple of indices for that first step 
+    # (first step is the location that the agent wants to go to next)
+    def get_first_step(self, agent):
         self.a_star_copy = copy.deepcopy(self.agents)
         for i in range(len(self.a_star_copy)):
             for j in range(len(self.a_star_copy[i])):
@@ -65,14 +74,11 @@ class Stampede:
                     self.a_star_copy[i][j] = 0
                 else:
                     self.a_star_copy[i][j] = 1
-        
-        print("shortest path copy is: ", self.a_star_copy)
-        
+                
         # calculate the shortest path from this
         A_star = A_Star(self.height, self.width)
-        print(A_star.ROW, A_star.COL)
-        firstStep = A_star.a_star_search(self.a_star_copy, [self.height - 1, self.width - 1])
-        print("first step is: ", firstStep)
+        firstStep = A_star.a_star_search(self.a_star_copy, [agent.position['y'], agent.position['x']])
+        return firstStep
 
     def move_locations(self):
         total_distance = 0
@@ -80,7 +86,18 @@ class Stampede:
             self.old_agents = copy.deepcopy(self.agents)
             n_changes = 0
             
-            for agent in self.old_agents: # each player moves one-by-one
+            for row in self.old_agents: # each player moves one-by-one
+                for agent in row:
+                    if agent != '': # if that spot isn't empty
+                        print("agent coords: ", agent.position)
+                        firstStep = self.get_first_step(agent)
+
+                        if firstStep == None: # if the agent can't find a path to where they want to go
+                            # play a normal-form game with the person in front of them
+                            continue
+                        else:
+                            print("agent's first step is: ", firstStep)
+                
                 # have players use a* to get to destination. 
                 # if a* has no way of getting to destination, then have players play normal-form game with person in front of them 
                     # to see whether they push the person in front of them or queue
@@ -338,12 +355,14 @@ class Stampede:
 def main():
     ##Starter Simulation
     weightDistribution = {"mean": 160, "sd": 20}  # not facts idk what weight distribution is
-    stampede = Stampede(10, 9, 0.1, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
+    stampede = Stampede(5, 5, 0.2, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
     stampede.populate()
 
     stampede.plot('Stampede Model: Initial State', 'stampede_initial.png')
 
-    stampede.calculate_shortest_path()
+    stampede.move_locations()
+
+    stampede.print_a_star_copy()
 
     # stampede.move_locations()
 

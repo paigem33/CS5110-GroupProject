@@ -66,8 +66,8 @@ class A_Star:
     # this function returns the first step in the path (that isn't the cell the agent is already in)
     def first_step_of_path(self, cell_details, dest):
         path = []
-        row = dest[0]
-        col = dest[1]
+        row = dest[1]
+        col = dest[0]
     
         # Trace the path from destination to source using parent cells
         while not (cell_details[row][col].parent_i == row and cell_details[row][col].parent_j == col):
@@ -84,6 +84,7 @@ class A_Star:
         return path[1]
     
     # Implement the A* search algorithm
+    # takes only grid and starting point as params, will find fastest to row 0 around the obstacles
     def a_star_search(self, grid, src):
         # Check if the source is valid
         if not self.is_valid(src[0], src[1]):
@@ -139,9 +140,9 @@ class A_Star:
                         # Set the parent of the destination cell
                         cell_details[new_i][new_j].parent_i = i
                         cell_details[new_i][new_j].parent_j = j
-                        print("The destination cell is found")
+                        # print("The destination cell is found")
                         # Trace and print the path from source to destination
-                        # self.trace_path(cell_details, dest)
+                        self.trace_path(cell_details, [new_i, new_j])
                         firstStep = self.first_step_of_path(cell_details, [new_i, new_j]) # added this, it returns first step of path
                         found_dest = True
                         return firstStep # return the first step of the path from the algorithm
