@@ -95,21 +95,81 @@ class Stampede:
                         if firstStep == None: # if the agent can't find a path to where they want to go
                             # move forward, or if you can't, then vvv
                             # play a normal-form game with the person in front of them
-                            continue
+                            if agent.position['y'] < self.height - 1:  # if agent is not at the bottom row 
+                                if self.agents[agent.position['y'] + 1][agent.position['x']] == '':
+                                    # Move the agent forward if space is empty
+                                    self.agents[agent.position['y'] + 1][agent.position['x']] = agent
+                                    self.agents[agent.position['y']][agent.position['x']] = ''
+                                else:
+                                    # Play a normal-form game
+                                    other_agent = self.agents[agent.position['y'] + 1][agent.position['x']]
+                                    agent_strategy, other_agent_strategy = self.play_normal_form_game(agent, other_agent)
+                                    # game results 
+                                    if agent_strategy == 'queue' and other_agent_strategy == 'push':
+                                        # since other agent is in front of our agent and our agent is queueing, nothing happens
+                                        # it wouldn't make sense for the other agent to want to move backwards
+                                        # so basically in this case the current agent just stays in place 
+                                        continue
+                                    elif agent_strategy == 'push' and other_agent_strategy == 'queue':
+                                        # if the agent weighs more than the other agent, they will trade spaces and other agent falls
+                                        if agent.weight > other_agent.weight:  # Check if the current agent weighs more
+                                            target_y = other_agent.position['y']
+                                            target_x = other_agent.position['x']
+                                            agent_starting_y = agent.position['y']
+                                            agent_starting_x = agent.position['x']
+                                            self.agents[target_y][target_x] = agent
+                                            agent.position['y'] = target_y
+                                            agent.position['x'] = target_x
+                                            other_agent.fallen = True
+                                            other_agent.timesTrampled += 1
+                                            # if other agent has fallen twice then they die and don't move on the map
+                                            if other_agent.timesTrampled == 2:
+                                                other_agent.alive = False
+                                                other_agent.position['y'] = None
+                                                other_agent.position['x'] = None
+                                            else:
+                                                self.agents[agent_starting_y][agent_starting_x] = other_agent
+                                                other_agent.position['y'] = agent_starting_y
+                                                other_agent.position['x'] = agent_starting_x
+                                        continue
+                                    elif agent_strategy == 'push' and other_agent_strategy == 'push':
+                                        # the agent that weighs more will win
+                                        # if agent wins, then they will trade spaces with the other agent and the other agent falls
+                                        # if other agent wins, they stay in place 
+                                        if agent.weight > other_agent.weight:  # Check if the current agent weighs more
+                                            # If the current agent weighs more, trade places with the other agent
+                                            target_y = other_agent.position['y']
+                                            target_x = other_agent.position['x']
+                                            agent_starting_y = agent.position['y']
+                                            agent_starting_x = agent.position['x']
+                                            self.agents[target_y][target_x] = agent
+                                            agent.position['y'] = target_y
+                                            agent.position['x'] = target_x
+                                            other_agent.fallen = True
+                                            other_agent.timesTrampled += 1
+                                            # if other agent has fallen twice then they die and don't move on the map
+                                            if other_agent.timesTrampled == 2:
+                                                other_agent.alive = False
+                                                other_agent.position['y'] = None
+                                                other_agent.position['x'] = None
+                                            else:
+                                                self.agents[agent_starting_y][agent_starting_x] = other_agent
+                                                other_agent.position['y'] = agent_starting_y
+                                                other_agent.position['x'] = agent_starting_x
+                                        elif agent.weight < other_agent.weight:  # Check if the other agent weighs more
+                                            # If the other agent weighs more, no action needed, continue to the next agent
+                                            continue
+                                        continue
+                                    elif agent_strategy == 'queue' and other_agent_strategy == 'queue':
+                                        # if they both queue, nothing happens
+                                        continue
                         else:
                             print("agent's first step is: ", firstStep) # this is in row, col order, so it'll look backwards to us
+                            self.agents[agent.position['y']][agent.position['x']] = ''
+                            self.agents[firstStep[0]][firstStep[1]] = agent
+                            agent.position['y'] = firstStep[0]
+                            agent.position['x'] = firstStep[1]
                 
-                # have players use a* to get to destination. 
-                # if a* has no way of getting to destination, then have players play normal-form game with person in front of them 
-                    # to see whether they push the person in front of them or queue
-                    # if they push the person in front of them and that person queues, and they're stronger than the person they pushed, 
-                    # then the players switch spots (and the weaker person is marked as fallen?)
-
-                # TODO: PLAY A NORMAL-FORM GAME TO DETERMINE IF AGENT QUEUES/PUSHES, AND THUS IF PLAYER MOVES OR NOT, AND IF PLAYER FALLS OR NOT
-                    # can use calculateCrowdDensity() to determine the crowd density around an agent
-                    # then use agent.isRational(crowdDensity) to determine whether that agent is going to be rational or irrational
-                continue
-            
             if n_changes == 0:
                 break
 
