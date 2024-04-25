@@ -49,13 +49,113 @@ class Stampede:
                     newAgent.position['x'] = x
                     newAgent.position['y'] = y
                     break
+    def nine_square_ring(self, x,y):
+        full_spots = 0
+        # Lower left square
+        if x > 0 and y > 0:
+            if not A_Star.is_unblocked(self.agents, x-1, y-1):
+                full_spots += 1
+        # Lower Square
+        if y > 0:
+            if not A_Star.is_unblocked(self.agents, x, y-1):
+                full_spots += 1
+        # Lower right square
+        if x < (self.width - 1) and y > 0:
+            if not A_Star.is_unblocked(self.agents, x+1, y-1):
+                full_spots += 1
+        # Left square
+        if x > 0:
+            if not A_Star.is_unblocked(self.agents, x-1, y):
+                full_spots += 1
+        # Right square
+        if x < (self.width - 1):
+            if not A_Star.is_unblocked(self.agents, x+1, y):
+                full_spots += 1
+        # Upper Left square
+        if x > 0 and y < (self.height - 1):
+            if not A_Star.is_unblocked(self.agents, x-1, y+1):
+                full_spots += 1
+        # Upper square
+        if x > 0 and y < (self.height - 1):
+            if not A_Star.is_unblocked(self.agents, x, y+1):
+                full_spots += 1
+        # Upper right square
+        if x < (self.width - 1) and y < (self.height - 1):
+            if not A_Star.is_unblocked(self.agents, x+1, y+1):
+                full_spots += 1
+        return full_spots
+    
 
-    def calculateCrowdDensity(self):
-        # TODO: DETERMINE THE RATIO OF EMPTY SPACES TO OCCUPIED SPACES AROUND THE PLAYER
-        # I'M THINKING THIS SHOULD BE FOR AT LEAST TWO RINGS AROUND THE PLAYER, IF NOT THREE
-            # because just looking at the 9 squares immediately around a person doesn't seem like
-            # enough to cause a person to panic
-        return
+    def sixteen_square_ring(self, x, y):
+        full_spots = 0
+        # Lowest leftest
+        if x-2 >= 0 and y-2 >= 0:
+            if not A_Star.is_unblocked(self.agents, x-2, y-2):
+                full_spots += 1
+        # Lowest left
+        if x-1 >= 0 and y-2 >= 0:
+            if not A_Star.is_unblocked(self.agents, x-1, y-2):
+                full_spots += 1
+        # Lowest
+        if x >= 0 and y-2 >= 0:
+            if not A_Star.is_unblocked(self.agents, x, y-2):
+                full_spots += 1
+        # Lowest right
+        if x+1 <= (self.width-1) and y-2 >= 0:
+            if not A_Star.is_unblocked(self.agents, x+1, y-2):
+                full_spots += 1
+        # Lowest rightest
+        if x+2 <= (self.width-1) and y-2 >= 0:
+            if not A_Star.is_unblocked(self.agents, x+2, y-2):
+                full_spots += 1
+        # Lower leftest
+        if x-2 >= 0 and y-1 >= 0:
+            if not A_Star.is_unblocked(self.agents, x-2, y-1):
+                full_spots += 1
+        # Lower rightest
+        if x+2 <= (self.width-1) and y-1 >= 0:
+            if not A_Star.is_unblocked(self.agents, x+2, y-1):
+                full_spots += 1
+        # Leftest
+        if x-2 >= 0 and y >= 0:
+            if not A_Star.is_unblocked(self.agents, x-2, y):
+                full_spots += 1
+        # Rightest
+        if x+2 <= (self.width-1) and y >= 0:
+            if not A_Star.is_unblocked(self.agents, x+2, y):
+                full_spots += 1
+        # Higher leftest
+        if x-2 >= 0 and y+1 <= (self.height-1):
+            if not A_Star.is_unblocked(self.agents, x-2, y+1):
+                full_spots += 1
+        # Higher rightest
+        if x+2 <= (self.width-1) and y+1 <= (self.height-1):
+            if not A_Star.is_unblocked(self.agents, x+2, y+1):
+                full_spots += 1
+        # Highest leftest
+        if x-2 >= 0 and y+2 <= (self.height-1):
+            if not A_Star.is_unblocked(self.agents, x-2, y+2):
+                full_spots += 1
+        # Highest left
+        if x-1 >= 0 and y+2 <= (self.height-1):
+            if not A_Star.is_unblocked(self.agents, x-1, y+2):
+                full_spots += 1
+        # Highest
+        if x >= 0 and y+2 <= (self.height-1):
+            if not A_Star.is_unblocked(self.agents, x, y+2):
+                full_spots += 1
+        # Highest right
+        if x+1 <= (self.width-1) and y+2 <= (self.height-1):
+            if not A_Star.is_unblocked(self.agents, x+1, y+2):
+                full_spots += 1
+        # Highest rightest
+        if x+2 <= (self.width-1) and y+2 <= (self.height-1):
+            if not A_Star.is_unblocked(self.agents, x+2, y+2):
+                full_spots += 1
+        return full_spots
+    
+    def calculateCrowdDensity(self, x, y):
+        return (self.nine_square_ring(x,y) + self.sixteen_square_ring(x,y))/24
     
 
     def print_a_star_copy(self):
