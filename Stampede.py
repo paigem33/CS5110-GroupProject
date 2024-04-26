@@ -88,7 +88,7 @@ class Stampede:
         full_spots = 0
         # Lowest leftest
         if x-2 >= 0 and y-2 >= 0:
-            if not self.agents[x-2][-2] == '':
+            if not self.agents[x-2][y-2] == '':
                 full_spots += 1
         # Lowest left
         if x-1 >= 0 and y-2 >= 0:
@@ -124,7 +124,7 @@ class Stampede:
                 full_spots += 1
         # Higher leftest
         if x-2 >= 0 and y+1 <= (self.height-1):
-            if not self.agents[x-2][y-2] == '':
+            if not self.agents[x-2][y+1] == '': #CHANGE
                 full_spots += 1
         # Higher rightest
         if x+2 <= (self.width-1) and y+1 <= (self.height-1):
@@ -154,10 +154,6 @@ class Stampede:
     
     def calculateCrowdDensity(self, x, y):
         result = (self.nine_square_ring(x,y) + self.sixteen_square_ring(x,y))/24
-        print("x,y: ", x, y)
-        print("density percentage: ", result)
-        print("denisty first ring: ", self.nine_square_ring(x,y))
-        print("density second ring: ", self.sixteen_square_ring(x,y))
         return result
 
     def print_a_star_copy(self):
@@ -209,7 +205,11 @@ class Stampede:
                                     # Move the agent forward if space is empty
                                     self.agents[agent.position['y'] - 1][agent.position['x']] = agent
                                     self.agents[agent.position['y']][agent.position['x']] = ''
+                                    
+                                    # update the agent to know its new location
+                                    agent.position['y'] -= 1
                                     n_changes += 1  # Increment the change counter
+
                                 elif self.agents[agent.position['y'] - 1][agent.position['x']] != '' and other_agent.alive:
                                     # Play a normal-form game
                                     agent_strategy, other_agent_strategy = self.play_normal_form_game(agent, other_agent)
@@ -230,7 +230,6 @@ class Stampede:
                                             agent.position['y'] = target_y
                                             agent.position['x'] = target_x
                                             other_agent.fallen = True
-                                            print("the other agent has fallen!")
                                             other_agent.timesTrampled += 1
                                             # if other agent has fallen twice then they die and don't move on the map
                                             if other_agent.timesTrampled == 2:
@@ -340,8 +339,8 @@ class Stampede:
     # returns the strategy for each in the same order they were passed in
     # for example, play_normal_form_game(agent1, agent2) would return agent1Strategy, agent2Strategy
     def play_normal_form_game(self, agent1, agent2):
-        agent1_rational = agent1.isRational(self.calculateCrowdDensity(agent1.position['y'], agent1.position['x']))
-        agent2_rational = agent2.isRational(self.calculateCrowdDensity(agent2.position['y'], agent2.position['x']))
+        agent1_rational = agent1.isRational(self.calculateCrowdDensity(agent1.position['x'], agent1.position['y']))
+        agent2_rational = agent2.isRational(self.calculateCrowdDensity(agent2.position['x'], agent2.position['y']))
 
         if agent1_rational and agent1.weight < agent2.weight and agent2_rational and agent2.weight > agent1.weight:
             # Outcome for you: rational, weak; he: rational, strong
@@ -590,14 +589,14 @@ class Stampede:
 def main():
     ##Starter Simulation
     weightDistribution = {"mean": 160, "sd": 20}  # not facts idk what weight distribution is
-    stampede = Stampede(8, 10, 0.5, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
+    stampede = Stampede(9, 10, 0.9, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
     stampede.populate()
 
     stampede.plot('Stampede Model: Initial State', 'stampede_initial.png')
 
     stampede.move_locations()
 
-    # stampede.results(stampede.allAgents)
+    stampede.results(stampede.allAgents)
 
     stampede.plot('Stampede Model: Final State',
                         'stampede_final.png')
