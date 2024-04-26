@@ -16,13 +16,13 @@ from A_star import Cell, A_Star
 
 class Stampede:
     def __init__(self, width, height, fullRatio, n_iterations, weightDistribution):
-        # self.agents = []                              # array: holds all agents               # TODO: RIGHT NOW THIS IS AN ARRAY, USED TO BE STORED IN {}; DECIDE IF THIS IS A GOOD DECISION OR IF IT SHOULD BE {}
         self.width = width                              # int: width of the grid I think
         self.height = height                            # int: height of the grid I think
         self.totalCells = width * height
         self.fullRatio = fullRatio                      # float
         self.n_iterations = n_iterations                # int
         self.weightDistribution = weightDistribution    # dictionary: { "mean": int, "sd": int }
+        self.allAgents = []
         # all agents just need to get to row 0
 
     def populate(self):
@@ -47,6 +47,7 @@ class Stampede:
 
                 if self.agents[y][x] == '':
                     self.agents[y][x] = newAgent  # fill a random "empty" spot in the array with a new agent
+                    # self.allAgents.append
                     newAgent.position['x'] = x
                     newAgent.position['y'] = y
                     break
@@ -197,7 +198,7 @@ class Stampede:
                             print('first step is none')
                             # move forward, or if you can't, then vvv
                             # play a normal-form game with the person in front of them
-                            if agent.position['y'] < self.height - 1:  # if agent is not at the bottom row 
+                            if agent.position['y'] != 0:  # if agent is not at the bottom row 
                                 other_agent = self.agents[agent.position['y'] + 1][agent.position['x']]
                                 if self.agents[agent.position['y'] + 1][agent.position['x']] == '':
                                     # Move the agent forward if space is empty
@@ -268,7 +269,11 @@ class Stampede:
                                     other_agent.position['x'] = agent_starting_x
                                     self.agents[target_y][target_x] = agent
                                     self.agents[agent_starting_y][agent_starting_x] = other_agent
-                                    
+
+                            else:
+                                # remove from agent list 
+                                self.agents[agent.position['x']][agent.position['y']] = ''
+
                         else:
                             print("agent's first step is: ", firstStep) # this is in row, col order, so it'll look backwards to us
                             self.agents[agent.position['y']][agent.position['x']] = ''
