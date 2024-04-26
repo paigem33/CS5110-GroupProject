@@ -53,8 +53,13 @@ class Stampede:
         if x > 0 and y > 0:
             if not self.agents[x-1][y-1] == '':
                 full_spots += 1
+<<<<<<< Updated upstream
         # Lower Square
         if y > 0:
+=======
+        # Lower Square.
+        if y-1 >= 0 and x >= 0:
+>>>>>>> Stashed changes
             if not self.agents[x][y-1] == '':
                 full_spots += 1
         # Lower right square
