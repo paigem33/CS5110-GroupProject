@@ -49,39 +49,39 @@ class Stampede:
                     newAgent.position['y'] = y
                     break
 
-    def nine_square_ring(self, x, y):
+    def nine_square_ring(self, x,y):
         full_spots = 0
         # Lower left square
-        if x > 0 and y > 0:
-            if not self.agents[x - 1][y - 1] == '':
+        if x-1 >= 0 and y-1 >= 0:
+            if not self.agents[x-1][y-1] == '':
                 full_spots += 1
         # Lower Square
-        if y > 0:
-            if not self.agents[x][y - 1] == '':
+        if y-1 >= 0 and x >= 0:
+            if not self.agents[x][y-1] == '':
                 full_spots += 1
         # Lower right square
-        if x < (self.height - 1) and y > 0:
-            if not self.agents[x + 1][y - 1] == '':
+        if x+1 <= (self.height - 1) and y-1 >= 0:
+            if not self.agents[x+1][y-1] == '':
                 full_spots += 1
         # Left square
-        if x > 0:
-            if not self.agents[x - 1][y] == '':
+        if x-1 >= 0 and y >= 0:
+            if not self.agents[x-1][y] == '':
                 full_spots += 1
         # Right square
-        if x < (self.height - 1):
-            if not self.agents[x + 1][y] == '':
+        if x+1 <= (self.height - 1) and y >= 0:
+            if not self.agents[x+1][y] == '':
                 full_spots += 1
         # Upper Left square
-        if x > 0 and y < (self.width - 1):
-            if not self.agents[x - 1][y + 1] == '':
+        if x-1 >= 0 and y+1 <= (self.width - 1):
+            if not self.agents[x-1][y+1] == '':
                 full_spots += 1
         # Upper square
-        if x > 0 and y < (self.width - 1):
-            if not self.agents[x][y + 1] == '':
+        if x >= 0 and y+1 <= (self.width - 1):
+            if not self.agents[x][y+1] == '':
                 full_spots += 1
         # Upper right square
-        if x < (self.height - 1) and y < (self.width - 1):
-            if not self.agents[x + 1][y + 1] == '':
+        if x+1 <= (self.height - 1) and y+1 <= (self.width - 1):
+            if not self.agents[x+1][y+1] == '':
                 full_spots += 1
         return full_spots
 
