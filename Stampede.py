@@ -571,14 +571,12 @@ class Stampede:
                 print("Times Trampled: " + str(agent.timesTrampled))
                 if agent.fallen:
                     print("Fallen? Yes")
-                    print(agent.position)
                 else:
                     print("Fallen? No")
                 if agent.alive:
                     print("Alive? Yes")
                 else:
                     print("Alive? No")
-                    print(agent.position)
                 print()
                 if not agent.alive:
                     isDead += 1
