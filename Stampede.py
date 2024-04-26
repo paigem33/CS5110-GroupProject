@@ -6,17 +6,18 @@ import copy
 from Agent import Agent
 from A_star import Cell, A_Star
 
-# we need to return the number of agents that fell and the number that died 
+
+# we need to return the number of agents that fell and the number that died
 # show an image every few steps
 
 class Stampede:
     def __init__(self, width, height, fullRatio, n_iterations, weightDistribution):
-        self.width = width                              # int: width of the grid I think
-        self.height = height                            # int: height of the grid I think
+        self.width = width  # int: width of the grid I think
+        self.height = height  # int: height of the grid I think
         self.totalCells = width * height
-        self.fullRatio = fullRatio                      # float
-        self.n_iterations = n_iterations                # int
-        self.weightDistribution = weightDistribution    # dictionary: { "mean": int, "sd": int }
+        self.fullRatio = fullRatio  # float
+        self.n_iterations = n_iterations  # int
+        self.weightDistribution = weightDistribution  # dictionary: { "mean": int, "sd": int }
         self.allAgents = []
         # all agents just need to get to row 0
 
@@ -30,144 +31,139 @@ class Stampede:
         # Fill the array with Agents
         for _ in range(numPlayerCells):
             while True:
-                agentWeight = random.gauss(self.weightDistribution["mean"], self.weightDistribution["sd"])  # give the agent a normally-distributed weight based on given mean and sd
-                rational = True                 
-                stepTime = 1                    
-                panicThreshold = 0.7            
-                
-                newAgent = Agent(agentWeight, rational, stepTime, panicThreshold) 
+                agentWeight = random.gauss(self.weightDistribution["mean"], self.weightDistribution[
+                    "sd"])  # give the agent a normally-distributed weight based on given mean and sd
+                rational = True
+                stepTime = 1
+                panicThreshold = 0.7
+
+                newAgent = Agent(agentWeight, rational, stepTime, panicThreshold)
 
                 x = random.randint(0, self.width - 1)
                 y = random.randint(0, self.height - 1)
 
                 if self.agents[y][x] == '':
                     self.agents[y][x] = newAgent  # fill a random "empty" spot in the array with a new agent
-                    self.allAgents.append(newAgent) # keep track of total agents for stats reasons
+                    self.allAgents.append(newAgent)  # keep track of total agents for stats reasons
                     newAgent.position['x'] = x
                     newAgent.position['y'] = y
                     break
 
-    def nine_square_ring(self, x,y):
+    def nine_square_ring(self, x, y):
         full_spots = 0
         # Lower left square
         if x > 0 and y > 0:
-            if not self.agents[x-1][y-1] == '':
+            if not self.agents[x - 1][y - 1] == '':
                 full_spots += 1
-<<<<<<< Updated upstream
         # Lower Square
         if y > 0:
-=======
-        # Lower Square.
-        if y-1 >= 0 and x >= 0:
->>>>>>> Stashed changes
-            if not self.agents[x][y-1] == '':
+            if not self.agents[x][y - 1] == '':
                 full_spots += 1
         # Lower right square
-        if x < (self.width - 1) and y > 0:
-            if not self.agents[x+1][y-1] == '':
+        if x < (self.height - 1) and y > 0:
+            if not self.agents[x + 1][y - 1] == '':
                 full_spots += 1
         # Left square
         if x > 0:
-            if not self.agents[x-1][y] == '':
+            if not self.agents[x - 1][y] == '':
                 full_spots += 1
         # Right square
-        if x < (self.width - 1):
-            if not self.agents[x+1][y] == '':
+        if x < (self.height - 1):
+            if not self.agents[x + 1][y] == '':
                 full_spots += 1
         # Upper Left square
-        if x > 0 and y < (self.height - 1):
-            if not self.agents[x-1][y+1] == '':
+        if x > 0 and y < (self.width - 1):
+            if not self.agents[x - 1][y + 1] == '':
                 full_spots += 1
         # Upper square
-        if x > 0 and y < (self.height - 1):
-            if not self.agents[x][y+1] == '':
+        if x > 0 and y < (self.width - 1):
+            if not self.agents[x][y + 1] == '':
                 full_spots += 1
         # Upper right square
-        if x < (self.width - 1) and y < (self.height - 1):
-            if not self.agents[x+1][y+1] == '':
+        if x < (self.height - 1) and y < (self.width - 1):
+            if not self.agents[x + 1][y + 1] == '':
                 full_spots += 1
         return full_spots
-    
 
     def sixteen_square_ring(self, x, y):
         full_spots = 0
         # Lowest leftest
-        if x-2 >= 0 and y-2 >= 0:
-            if not self.agents[x-2][y-2] == '':
+        if x - 2 >= 0 and y - 2 >= 0:
+            if not self.agents[x - 2][y - 2] == '':
                 full_spots += 1
         # Lowest left
-        if x-1 >= 0 and y-2 >= 0:
-            if not self.agents[x-1][y-2] == '':
+        if x - 1 >= 0 and y - 2 >= 0:
+            if not self.agents[x - 1][y - 2] == '':
                 full_spots += 1
         # Lowest
-        if x >= 0 and y-2 >= 0:
-            if not self.agents[x][y-2] == '': 
+        if x >= 0 and y - 2 >= 0:
+            if not self.agents[x][y - 2] == '':
                 full_spots += 1
         # Lowest right
-        if x+1 <= (self.width-1) and y-2 >= 0:
-            if not self.agents[x+1][y-2] == '':
+        if x + 1 <= (self.height - 1) and y - 2 >= 0:
+            if not self.agents[x + 1][y - 2] == '':
                 full_spots += 1
         # Lowest rightest
-        if x+2 <= (self.width-1) and y-2 >= 0:
-            if not self.agents[x+2][y-2] == '':
+        if x + 2 <= (self.height - 1) and y - 2 >= 0:
+            if not self.agents[x + 2][y - 2] == '':
                 full_spots += 1
         # Lower leftest
-        if x-2 >= 0 and y-1 >= 0:
-            if not self.agents[x-2][y-1] == '':
+        if x - 2 >= 0 and y - 1 >= 0:
+            if not self.agents[x - 2][y - 1] == '':
                 full_spots += 1
         # Lower rightest
-        if x+2 <= (self.width-1) and y-1 >= 0:
-            if not self.agents[x+2][y-1] == '':
+        if x + 2 <= (self.width - 1) and y - 1 >= 0:
+            if not self.agents[x + 2][y - 1] == '':
                 full_spots += 1
         # Leftest
-        if x-2 >= 0 and y >= 0:
-            if not self.agents[x-2][y] == '':
+        if x - 2 >= 0 and y >= 0:
+            if not self.agents[x - 2][y] == '':
                 full_spots += 1
         # Rightest
-        if x+2 <= (self.width-1) and y >= 0:
-            if not self.agents[x+2][y] == '':
+        if x + 2 <= (self.height - 1) and y >= 0:
+            if not self.agents[x + 2][y] == '':
                 full_spots += 1
         # Higher leftest
-        if x-2 >= 0 and y+1 <= (self.height-1):
-            if not self.agents[x-2][y+1] == '': #CHANGE
+        if x - 2 >= 0 and y + 1 <= (self.width - 1):
+            if not self.agents[x - 2][y + 1] == '':  # CHANGE
                 full_spots += 1
         # Higher rightest
-        if x+2 <= (self.width-1) and y+1 <= (self.height-1):
-            if not self.agents[x+2][y+1] == '':
+        if x + 2 <= (self.height - 1) and y + 1 <= (self.width - 1):
+            if not self.agents[x + 2][y + 1] == '':
                 full_spots += 1
         # Highest leftest
-        if x-2 >= 0 and y+2 <= (self.height-1):
-            if not self.agents[x-2][y+2] == '':
+        if x - 2 >= 0 and y + 2 <= (self.width - 1):
+            if not self.agents[x - 2][y + 2] == '':
                 full_spots += 1
         # Highest left
-        if x-1 >= 0 and y+2 <= (self.height-1):
-            if not self.agents[x-1][y+2] == '': 
+        if x - 1 >= 0 and y + 2 <= (self.width - 1):
+            if not self.agents[x - 1][y + 2] == '':
                 full_spots += 1
         # Highest
-        if x >= 0 and y+2 <= (self.height-1):
-            if not self.agents[x][y+2] == '':
+        if x >= 0 and y + 2 <= (self.width - 1):
+            if not self.agents[x][y + 2] == '':
                 full_spots += 1
         # Highest right
-        if x+1 <= (self.width-1) and y+2 <= (self.height-1):
-            if not self.agents[x+1][y+2] == '':
+        if x + 1 <= (self.height - 1) and y + 2 <= (self.width - 1):
+            if not self.agents[x + 1][y + 2] == '':
                 full_spots += 1
         # Highest rightest
-        if x+2 <= (self.width-1) and y+2 <= (self.height-1):
-            if not self.agents[x+2][y+2] == '':
+        if x + 2 <= (self.height - 1) and y + 2 <= (self.width - 1):
+            if not self.agents[x + 2][y + 2] == '':
                 full_spots += 1
         return full_spots
-    
+
     def calculateCrowdDensity(self, x, y):
-        result = (self.nine_square_ring(x,y) + self.sixteen_square_ring(x,y))/24
+        result = (self.nine_square_ring(x, y) + self.sixteen_square_ring(x, y)) / 24
         return result
 
     def print_a_star_copy(self):
         print("a star copy: ")
         for row in self.a_star_copy:
             print(row)
-    
+
     # this function takes one agent as a parameter
-    # if it can find the first step the player should take, it returns a tuple of indices for that first step 
+    # if it can find the first step the player should take, it returns a tuple of indices for that first step
     # (first step is the location that the agent wants to go to next)
     def get_first_step(self, agent):
         self.a_star_copy = copy.deepcopy(self.agents)
@@ -177,7 +173,7 @@ class Stampede:
                     self.a_star_copy[i][j] = 0
                 else:
                     self.a_star_copy[i][j] = 1
-                
+
         # calculate the shortest path from this
         A_star = A_Star(self.height, self.width)
         firstStep = A_star.a_star_search(self.a_star_copy, [agent.position['y'], agent.position['x']])
@@ -189,40 +185,42 @@ class Stampede:
         for i in range(self.n_iterations):
             self.old_agents = copy.deepcopy(self.agents)
             n_changes = 0
-            
-            for row in self.agents: # each player moves one-by-one
+
+            for row in self.agents:  # each player moves one-by-one
                 for agent in row:
-                    if agent != '' and agent.alive: # if that spot isn't empty
+                    if agent != '' and agent.alive:  # if that spot isn't empty
                         # print("agent coords: ", agent.position)
                         firstStep = self.get_first_step(agent)
 
-                        if firstStep == None: # if the agent can't find a path to where they want to go
+                        if firstStep == None:  # if the agent can't find a path to where they want to go
                             # swap x,y coords so that the following logic vvv works:
                             # tempX = agent.position['x']
                             # agent.position['x'] = agent.position['y']
-                            # agent.position['y'] = tempX 
+                            # agent.position['y'] = tempX
 
                             # move forward, or if you can't, then vvv
                             # play a normal-form game with the person in front of them
-                            if agent.position['y'] != 0:  # if agent is not at the bottom row 
+                            if agent.position['y'] != 0:  # if agent is not at the bottom row
                                 other_agent = self.agents[agent.position['y'] - 1][agent.position['x']]
                                 if self.agents[agent.position['y'] - 1][agent.position['x']] == '':
                                     # Move the agent forward if space is empty
                                     self.agents[agent.position['y'] - 1][agent.position['x']] = agent
                                     self.agents[agent.position['y']][agent.position['x']] = ''
-                                    
+
                                     # update the agent to know its new location
                                     agent.position['y'] -= 1
                                     n_changes += 1  # Increment the change counter
 
-                                elif self.agents[agent.position['y'] - 1][agent.position['x']] != '' and other_agent.alive:
+                                elif self.agents[agent.position['y'] - 1][
+                                    agent.position['x']] != '' and other_agent.alive:
                                     # Play a normal-form game
-                                    agent_strategy, other_agent_strategy = self.play_normal_form_game(agent, other_agent)
-                                    # game results 
+                                    agent_strategy, other_agent_strategy = self.play_normal_form_game(agent,
+                                                                                                      other_agent)
+                                    # game results
                                     if agent_strategy == 'queue' and other_agent_strategy == 'push':
                                         # since other agent is in front of our agent and our agent is queueing, nothing happens
                                         # it wouldn't make sense for the other agent to want to move backwards
-                                        # so basically in this case the current agent just stays in place 
+                                        # so basically in this case the current agent just stays in place
                                         continue
                                     elif agent_strategy == 'push' and other_agent_strategy == 'queue':
                                         # if the agent weighs more than the other agent, they will trade spaces and other agent falls
@@ -247,7 +245,7 @@ class Stampede:
                                     elif agent_strategy == 'push' and other_agent_strategy == 'push':
                                         # the agent that weighs more will win
                                         # if agent wins, then they will trade spaces with the other agent and the other agent falls
-                                        # if other agent wins, they stay in place 
+                                        # if other agent wins, they stay in place
                                         if agent.weight > other_agent.weight:  # Check if the current agent weighs more
                                             # If the current agent weighs more, trade places with the other agent
                                             target_y = other_agent.position['y']
@@ -283,11 +281,11 @@ class Stampede:
                                     other_agent.position['x'] = agent_starting_x
                                     self.agents[target_y][target_x] = agent
                                     self.agents[agent_starting_y][agent_starting_x] = other_agent
-                                
+
                                     n_changes += 1  # Increment the change counter
 
                             elif self.agents[agent.position['y']][agent.position['x']] != '':
-                                # remove from agent list 
+                                # remove from agent list
                                 self.agents[agent.position['y']][agent.position['x']] = ''
                                 n_changes += 1  # Increment the change counter
                             else:
@@ -301,8 +299,8 @@ class Stampede:
                             agent.position['x'] = firstStep[1]
                             n_changes += 1  # Increment the change counter
 
-            round_counter += 1    
-            
+            round_counter += 1
+
             if n_changes == 0:
                 n_changes_counter += 1
             else:
@@ -311,7 +309,7 @@ class Stampede:
             # Check if no changes were made in consecutive iterations
             if n_changes_counter == 2:
                 break
-            
+
             if round_counter % 5 == 0:
                 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
                 self.plot('Stampede Model: move ' + str(timestamp), 'move_' + timestamp + '.png')
@@ -320,7 +318,7 @@ class Stampede:
         fig, ax = plt.subplots()
         # agent_colors = {1: 'b', 2: 'r'}
         agentColor = 'r'
-        marker_size = 150 / self.width # no logic here, I just played around with it
+        marker_size = 150 / self.width  # no logic here, I just played around with it
         for row in self.agents:
             for agent in row:
                 if (agent != ''):
@@ -328,7 +326,8 @@ class Stampede:
                         agentColor = 'b'
                     if not agent.alive:
                         agentColor = 'g'
-                    ax.scatter(agent.position['x'] + 0.5, agent.position['y'] + 0.5, s=marker_size, color=agentColor) # TODO: CHANGE THIS TO BE COLORED BASED ON AGENT, NOT JUST RED ACROSS THE BOARD
+                    ax.scatter(agent.position['x'] + 0.5, agent.position['y'] + 0.5, s=marker_size,
+                               color=agentColor)  # TODO: CHANGE THIS TO BE COLORED BASED ON AGENT, NOT JUST RED ACROSS THE BOARD
 
         ax.set_title(title, fontsize=10, fontweight='bold')
         ax.set_xlim([0, self.width])
@@ -339,7 +338,7 @@ class Stampede:
         plt.close()
 
         return
-    
+
     # takes in two agents as params, agent1 and agent2
     # returns the strategy for each in the same order they were passed in
     # for example, play_normal_form_game(agent1, agent2) would return agent1Strategy, agent2Strategy
@@ -364,7 +363,7 @@ class Stampede:
             else:
                 strategy2 = 'push'
             return strategy1, strategy2
-        
+
         if agent1_rational and agent1.weight > agent2.weight and agent2_rational and agent2.weight < agent1.weight:
             # Outcome for you: rational, strong; he: rational, weak
             outcomes = {
@@ -562,7 +561,7 @@ class Stampede:
             else:
                 strategy2 = 'push'
             return strategy1, strategy2
-        
+
     def results(self, agent_list):
         isDead = 0
         didFall = 0
@@ -586,10 +585,11 @@ class Stampede:
                     isDead += 1
                 if agent.fallen:
                     didFall += 1
-            counter +=1
+            counter += 1
         print("-------Total Stats-------")
         print("Total Dead Agents: " + str(isDead))
         print("Total Fallen Agents: " + str(didFall))
+
 
 def main():
     ##Starter Simulation
@@ -604,7 +604,7 @@ def main():
     stampede.results(stampede.allAgents)
 
     stampede.plot('Stampede Model: Final State',
-                        'stampede_final.png')
+                  'stampede_final.png')
 
 
 if __name__ == "__main__":
