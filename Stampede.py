@@ -1,11 +1,3 @@
-'''
-Author : Adil Moujahid
-Email : adil.mouja@gmail.com
-Description: Simulations of Schelling's seggregation model
-
-You will need to set up pycharm to import matplotlib.
-'''
-
 import matplotlib.pyplot as plt
 import itertools
 import datetime
@@ -25,7 +17,7 @@ class Stampede:
         self.fullRatio = fullRatio                      # float
         self.n_iterations = n_iterations                # int
         self.weightDistribution = weightDistribution    # dictionary: { "mean": int, "sd": int }
-        self.allAgents = []
+        self.agents = []
         # all agents just need to get to row 0
 
     def populate(self):
@@ -555,8 +547,34 @@ class Stampede:
             else:
                 strategy2 = 'push'
             return strategy1, strategy2
-
-
+    def results(self, agent_list):
+        isDead = 0
+        didFall = 0
+        counter = 1
+        for agents in agent_list:
+            for agent in agents:
+                if (agent != ''):
+                    print("-----Agent " + str(counter) + "-----")
+                    print("Weight: " + str(agent.weight))
+                    print("Panic Threshold: " + str(agent.panicThreshold))
+                    print("Times Trampled: " + str(agent.timesTrampled))
+                    if agent.fallen:
+                        print("Fallen? Yes")
+                    else:
+                        print("Fallen? No")
+                    if agent.alive:
+                        print("Alive? Yes")
+                    else:
+                        print("Alive? No")
+                    print()
+                    if not agent.alive:
+                        isDead += 1
+                    if not agent.fallen:
+                        didFall += 1
+                counter +=1
+        print("-------Total Stats-------")
+        print("Total Dead Agents: " + str(isDead))
+        print("Total Fallen Agents: " + str(didFall))
 def main():
     ##Starter Simulation
     weightDistribution = {"mean": 160, "sd": 20}  # not facts idk what weight distribution is
@@ -568,11 +586,13 @@ def main():
     stampede.move_locations()
 
     stampede.print_a_star_copy()
+    print(stampede.agents[1])
+    stampede.results(stampede.agents)
 
     # stampede.move_locations()
 
     stampede.plot('Stampede Model: Final State',
-                     'stampede_final.png')
+                        'stampede_final.png')
 
 
 if __name__ == "__main__":
