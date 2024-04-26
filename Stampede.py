@@ -17,7 +17,7 @@ class Stampede:
         self.fullRatio = fullRatio                      # float
         self.n_iterations = n_iterations                # int
         self.weightDistribution = weightDistribution    # dictionary: { "mean": int, "sd": int }
-        self.agents = []
+        self.allAgents = []
         # all agents just need to get to row 0
 
     def populate(self):
@@ -42,7 +42,7 @@ class Stampede:
 
                 if self.agents[y][x] == '':
                     self.agents[y][x] = newAgent  # fill a random "empty" spot in the array with a new agent
-                    # self.allAgents.append
+                    self.allAgents.append(newAgent) # keep track of total agents for stats reasons
                     newAgent.position['x'] = x
                     newAgent.position['y'] = y
                     break
@@ -226,6 +226,7 @@ class Stampede:
                                             agent.position['y'] = target_y
                                             agent.position['x'] = target_x
                                             other_agent.fallen = True
+                                            print("the other agent has fallen!")
                                             other_agent.timesTrampled += 1
                                             # if other agent has fallen twice then they die and don't move on the map
                                             if other_agent.timesTrampled == 2:
@@ -553,34 +554,35 @@ class Stampede:
             else:
                 strategy2 = 'push'
             return strategy1, strategy2
+        
     def results(self, agent_list):
         isDead = 0
         didFall = 0
         counter = 0
-        for agents in agent_list:
-            for agent in agents:
-                if (agent != ''):
-                    print("-----Agent " + str(counter) + "-----")
-                    print("Weight: " + str(agent.weight))
-                    print("Panic Threshold: " + str(agent.panicThreshold))
-                    print("Times Trampled: " + str(agent.timesTrampled))
-                    if agent.fallen:
-                        print("Fallen? Yes")
-                    else:
-                        print("Fallen? No")
-                    if agent.alive:
-                        print("Alive? Yes")
-                    else:
-                        print("Alive? No")
-                    print()
-                    if not agent.alive:
-                        isDead += 1
-                    if agent.fallen:
-                        didFall += 1
-                counter +=1
+        for agent in agent_list:
+            if (agent != ''):
+                print("-----Agent " + str(counter) + "-----")
+                print("Weight: " + str(agent.weight))
+                print("Panic Threshold: " + str(agent.panicThreshold))
+                print("Times Trampled: " + str(agent.timesTrampled))
+                if agent.fallen:
+                    print("Fallen? Yes")
+                else:
+                    print("Fallen? No")
+                if agent.alive:
+                    print("Alive? Yes")
+                else:
+                    print("Alive? No")
+                print()
+                if not agent.alive:
+                    isDead += 1
+                if agent.fallen:
+                    didFall += 1
+            counter +=1
         print("-------Total Stats-------")
         print("Total Dead Agents: " + str(isDead))
         print("Total Fallen Agents: " + str(didFall))
+
 def main():
     ##Starter Simulation
     weightDistribution = {"mean": 160, "sd": 20}  # not facts idk what weight distribution is
@@ -593,7 +595,7 @@ def main():
 
     # stampede.print_a_star_copy()
     # print(stampede.agents[1])
-    stampede.results(stampede.agents)
+    stampede.results(stampede.allAgents)
 
     # stampede.move_locations()
 
