@@ -36,7 +36,7 @@ class A_Star:
     
     # Trace the path from source to destination
     def trace_path(self, cell_details, dest):
-        print("The Path is ")
+        # print("The Path is ")
         path = []
         row = dest[0]
         col = dest[1]
@@ -55,9 +55,9 @@ class A_Star:
         path.reverse()
     
         # Print the path
-        for i in path:
-            print("->", i, end=" ")
-        print()
+        # for i in path:
+        #     print("->", i, end=" ")
+        # print()
 
     # this function returns the first step in the path (that isn't the cell the agent is already in)
     def first_step_of_path(self, cell_details, dest):
@@ -89,7 +89,7 @@ class A_Star:
     
         # Check if we are already at the destination
         if self.is_destination(src[0], src[1]):
-            print("We are already at the destination")
+            # print("We are already at the destination")
             return
     
         # Initialize the closed list (visited cells)
@@ -164,5 +164,6 @@ class A_Star:
 
         # If the destination is not found after visiting all cells
         if not found_dest:
-            print("Failed to find the destination cell")
+            # print("Failed to find the destination cell")
+            return None
  

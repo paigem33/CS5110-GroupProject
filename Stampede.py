@@ -46,6 +46,7 @@ class Stampede:
                     newAgent.position['x'] = x
                     newAgent.position['y'] = y
                     break
+
     def nine_square_ring(self, x,y):
         full_spots = 0
         # Lower left square
@@ -184,23 +185,28 @@ class Stampede:
             self.old_agents = copy.deepcopy(self.agents)
             n_changes = 0
             
-            for row in self.old_agents: # each player moves one-by-one
+            for row in self.agents: # each player moves one-by-one
                 for agent in row:
                     if agent != '' and agent.alive: # if that spot isn't empty
-                        print("agent coords: ", agent.position)
+                        # print("agent coords: ", agent.position)
                         firstStep = self.get_first_step(agent)
 
                         if firstStep == None: # if the agent can't find a path to where they want to go
+                            # swap x,y coords so that the following logic vvv works:
+                            # tempX = agent.position['x']
+                            # agent.position['x'] = agent.position['y']
+                            # agent.position['y'] = tempX 
+
                             # move forward, or if you can't, then vvv
                             # play a normal-form game with the person in front of them
                             if agent.position['y'] != 0:  # if agent is not at the bottom row 
-                                other_agent = self.agents[agent.position['y'] + 1][agent.position['x']]
-                                if self.agents[agent.position['y'] + 1][agent.position['x']] == '':
+                                other_agent = self.agents[agent.position['y'] - 1][agent.position['x']]
+                                if self.agents[agent.position['y'] - 1][agent.position['x']] == '':
                                     # Move the agent forward if space is empty
-                                    self.agents[agent.position['y'] + 1][agent.position['x']] = agent
+                                    self.agents[agent.position['y'] - 1][agent.position['x']] = agent
                                     self.agents[agent.position['y']][agent.position['x']] = ''
                                     n_changes += 1  # Increment the change counter
-                                elif self.agents[agent.position['y'] + 1][agent.position['x']] != '' and other_agent.alive:
+                                elif self.agents[agent.position['y'] - 1][agent.position['x']] != '' and other_agent.alive:
                                     # Play a normal-form game
                                     agent_strategy, other_agent_strategy = self.play_normal_form_game(agent, other_agent)
                                     # game results 
@@ -271,9 +277,9 @@ class Stampede:
                                 
                                     n_changes += 1  # Increment the change counter
 
-                            elif self.agents[agent.position['x']][agent.position['y']] != '':
+                            elif self.agents[agent.position['y']][agent.position['x']] != '':
                                 # remove from agent list 
-                                self.agents[agent.position['x']][agent.position['y']] = ''
+                                self.agents[agent.position['y']][agent.position['x']] = ''
                                 n_changes += 1  # Increment the change counter
                             else:
                                 # has already been removed, do nothing
@@ -550,7 +556,7 @@ class Stampede:
     def results(self, agent_list):
         isDead = 0
         didFall = 0
-        counter = 1
+        counter = 0
         for agents in agent_list:
             for agent in agents:
                 if (agent != ''):
@@ -569,7 +575,7 @@ class Stampede:
                     print()
                     if not agent.alive:
                         isDead += 1
-                    if not agent.fallen:
+                    if agent.fallen:
                         didFall += 1
                 counter +=1
         print("-------Total Stats-------")
@@ -578,15 +584,15 @@ class Stampede:
 def main():
     ##Starter Simulation
     weightDistribution = {"mean": 160, "sd": 20}  # not facts idk what weight distribution is
-    stampede = Stampede(5, 5, 0.2, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
+    stampede = Stampede(10, 10, 0.5, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
     stampede.populate()
 
     stampede.plot('Stampede Model: Initial State', 'stampede_initial.png')
 
     stampede.move_locations()
 
-    stampede.print_a_star_copy()
-    print(stampede.agents[1])
+    # stampede.print_a_star_copy()
+    # print(stampede.agents[1])
     stampede.results(stampede.agents)
 
     # stampede.move_locations()
