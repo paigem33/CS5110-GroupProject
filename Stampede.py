@@ -424,7 +424,11 @@ class Stampede:
 def main():
     ##Starter Simulation
     weightDistribution = {"mean": 160, "sd": 20}  # not facts idk what weight distribution is
+<<<<<<< Updated upstream
     stampede = Stampede(10, 10, 0.7, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
+=======
+    stampede = Stampede(15, 15, 0.5, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
+>>>>>>> Stashed changes
     stampede.populate()
 
     stampede.plot('Stampede Model: Initial State', 'stampede_initial.png')
