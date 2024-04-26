@@ -14,10 +14,8 @@ import copy
 from Agent import Agent
 from A_star import Cell, A_Star
 
-# we need the process to terminate once everyone is either happy or dead 
 # we need to return the number of agents that fell and the number that died 
 # show an image every few steps
-# add back in the the density function
 
 class Stampede:
     def __init__(self, width, height, fullRatio, n_iterations, weightDistribution):
@@ -188,7 +186,8 @@ class Stampede:
         return firstStep
 
     def move_locations(self):
-        total_distance = 0
+        n_changes_counter = 0
+        round_counter = 0
         for i in range(self.n_iterations):
             self.old_agents = copy.deepcopy(self.agents)
             n_changes = 0
@@ -200,7 +199,6 @@ class Stampede:
                         firstStep = self.get_first_step(agent)
 
                         if firstStep == None: # if the agent can't find a path to where they want to go
-                            print('first step is none')
                             # move forward, or if you can't, then vvv
                             # play a normal-form game with the person in front of them
                             if agent.position['y'] != 0:  # if agent is not at the bottom row 
@@ -209,6 +207,7 @@ class Stampede:
                                     # Move the agent forward if space is empty
                                     self.agents[agent.position['y'] + 1][agent.position['x']] = agent
                                     self.agents[agent.position['y']][agent.position['x']] = ''
+                                    n_changes += 1  # Increment the change counter
                                 elif self.agents[agent.position['y'] + 1][agent.position['x']] != '' and other_agent.alive:
                                     # Play a normal-form game
                                     agent_strategy, other_agent_strategy = self.play_normal_form_game(agent, other_agent)
@@ -236,6 +235,7 @@ class Stampede:
                                             self.agents[agent_starting_y][agent_starting_x] = other_agent
                                             other_agent.position['y'] = agent_starting_y
                                             other_agent.position['x'] = agent_starting_x
+                                            n_changes += 1  # Increment the change counter
                                         continue
                                     elif agent_strategy == 'push' and other_agent_strategy == 'push':
                                         # the agent that weighs more will win
@@ -258,6 +258,8 @@ class Stampede:
                                             self.agents[agent_starting_y][agent_starting_x] = other_agent
                                             other_agent.position['y'] = agent_starting_y
                                             other_agent.position['x'] = agent_starting_x
+
+                                            n_changes += 1  # Increment the change counter
                                         elif agent.weight < other_agent.weight:  # Check if the other agent weighs more
                                             # If the other agent weighs more, no action needed, continue to the next agent
                                             continue
@@ -274,24 +276,38 @@ class Stampede:
                                     other_agent.position['x'] = agent_starting_x
                                     self.agents[target_y][target_x] = agent
                                     self.agents[agent_starting_y][agent_starting_x] = other_agent
+                                
+                                    n_changes += 1  # Increment the change counter
 
-                            else:
+                            elif self.agents[agent.position['x']][agent.position['y']] != '':
                                 # remove from agent list 
                                 self.agents[agent.position['x']][agent.position['y']] = ''
+                                n_changes += 1  # Increment the change counter
+                            else:
+                                # has already been removed, do nothing
+                                continue
 
                         else:
-                            print("agent's first step is: ", firstStep) # this is in row, col order, so it'll look backwards to us
                             self.agents[agent.position['y']][agent.position['x']] = ''
                             self.agents[firstStep[0]][firstStep[1]] = agent
                             agent.position['y'] = firstStep[0]
                             agent.position['x'] = firstStep[1]
+                            n_changes += 1  # Increment the change counter
 
-                    # after agent moved, see where they ended up this round
-                    timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-                    self.plot('Stampede Model: move ' + str(timestamp), 'move_' + timestamp + '.png')
-                
-            # if n_changes == 0:
-            #     break
+            round_counter += 1    
+            
+            if n_changes == 0:
+                n_changes_counter += 1
+            else:
+                n_changes_counter = 0  # Reset the counter if changes were made
+
+            # Check if no changes were made in consecutive iterations
+            if n_changes_counter == 2:
+                break
+            
+            if round_counter % 5 == 0:
+                timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+                self.plot('Stampede Model: move ' + str(timestamp), 'move_' + timestamp + '.png')
 
     def plot(self, title, file_name):
         fig, ax = plt.subplots()
@@ -555,8 +571,8 @@ def main():
 
     # stampede.move_locations()
 
-    # stampede.plot('Stampede Model: Final State',
-    #                  'stampede_final.png')
+    stampede.plot('Stampede Model: Final State',
+                     'stampede_final.png')
 
 
 if __name__ == "__main__":
