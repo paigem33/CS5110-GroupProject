@@ -1,10 +1,10 @@
 # CS5110-GroupProject
 
-## To Do:
+Run `Stampede.py` to see the simulation.
 
-* implement A-star algorithm
-* give each agent attributes (so prolly make an Agent class or something)
-    * weight is based on local weight distribution
-* set a range of squares/indices along the grid that are the crowd's destination
-* implement a way to play normal-form games between agents
-* implement the monk :D
+To interpret the results, see files `stampede_initial.png` and `stampede_final.png`. `stampede_initial.png` is printed before the simulation runs, and `stampede_final.png` is printed at the end of the simulation. 
+
+Color code:
+* red dots are players who are alive
+* blue dots are players who are fallen but still alive
+* green dots are players who are fallen and dead

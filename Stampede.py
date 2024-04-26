@@ -316,7 +316,6 @@ class Stampede:
 
     def plot(self, title, file_name):
         fig, ax = plt.subplots()
-        # agent_colors = {1: 'b', 2: 'r'}
         agentColor = 'r'
         marker_size = 150 / self.width  # no logic here, I just played around with it
         for row in self.agents:
@@ -593,8 +592,8 @@ class Stampede:
 
 def main():
     ##Starter Simulation
-    weightDistribution = {"mean": 160, "sd": 20}  # not facts idk what weight distribution is
-    stampede = Stampede(9, 10, 0.9, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
+    weightDistribution = {"mean": 160, "sd": 20}
+    stampede = Stampede(9, 10, 0.9, 200, weightDistribution)
     stampede.populate()
 
     stampede.plot('Stampede Model: Initial State', 'stampede_initial.png')
