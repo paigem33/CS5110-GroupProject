@@ -155,6 +155,7 @@ class Stampede:
                     newAgent.position['y'] = y
                     break
 
+<<<<<<< Updated upstream
         # Print the array for funsies
         print("self.agents is: ", self.agents)
 
@@ -164,6 +165,142 @@ class Stampede:
             # because just looking at the 9 squares immediately around a person doesn't seem like
             # enough to cause a person to panic
         return
+=======
+    def nine_square_ring(self, x,y):
+        full_spots = 0
+        # Lower left square
+        if x-1 > 0 and y-1 > 0:
+            if not self.agents[x-1][y-1] == '':
+                full_spots += 1
+        # Lower Square
+        if y-1 >= 0 and x >= 0:
+            if not self.agents[x][y-1] == '':
+                full_spots += 1
+        # Lower right square
+        if x+1 <= (self.height - 1) and y-1 >= 0:
+            if not self.agents[x+1][y-1] == '':
+                full_spots += 1
+        # Left square
+        if x-1 >= 0 and y >= 0:
+            if not self.agents[x-1][y] == '':
+                full_spots += 1
+        # Right square
+        if x+1 <= (self.height - 1) and y >= 0:
+            if not self.agents[x+1][y] == '':
+                full_spots += 1
+        # Upper Left square
+        if x-1 >= 0 and y+1 <= (self.width - 1):
+            if not self.agents[x-1][y+1] == '':
+                full_spots += 1
+        # Upper square
+        if x >= 0 and y+1 <= (self.width - 1):
+            if not self.agents[x][y+1] == '':
+                full_spots += 1
+        # Upper right square
+        if x+1 <= (self.height - 1) and y+1 <= (self.width - 1):
+            if not self.agents[x+1][y+1] == '':
+                full_spots += 1
+        return full_spots
+    
+
+    def sixteen_square_ring(self, x, y):
+        full_spots = 0
+        # Lowest leftest
+        if x-2 >= 0 and y-2 >= 0:
+            if not self.agents[x-2][-2] == '':
+                full_spots += 1
+        # Lowest left
+        if x-1 >= 0 and y-2 >= 0:
+            if not self.agents[x-1][y-2] == '':
+                full_spots += 1
+        # Lowest
+        if x >= 0 and y-2 >= 0:
+            if not self.agents[x][y-2] == '': 
+                full_spots += 1
+        # Lowest right
+        if x+1 <= (self.height-1) and y-2 >= 0:
+            if not self.agents[x+1][y-2] == '':
+                full_spots += 1
+        # Lowest rightest
+        if x+2 <= (self.height-1) and y-2 >= 0:
+            if not self.agents[x+2][y-2] == '':
+                full_spots += 1
+        # Lower leftest
+        if x-2 >= 0 and y-1 >= 0:
+            if not self.agents[x-2][y-1] == '':
+                full_spots += 1
+        # Lower rightest
+        if x+2 <= (self.height-1) and y-1 >= 0:
+            if not self.agents[x+2][y-1] == '':
+                full_spots += 1
+        # Leftest
+        if x-2 >= 0 and y >= 0:
+            if not self.agents[x-2][y] == '':
+                full_spots += 1
+        # Rightest
+        if x+2 <= (self.height-1) and y >= 0:
+            if not self.agents[x+2][y] == '':
+                full_spots += 1
+        # Higher leftest
+        if x-2 >= 0 and y+1 <= (self.width-1):
+            if not self.agents[x-2][y-2] == '':
+                full_spots += 1
+        # Higher rightest
+        if x+2 <= (self.height-1) and y+1 <= (self.width-1):
+            if not self.agents[x+2][y+1] == '':
+                full_spots += 1
+        # Highest leftest
+        if x-2 >= 0 and y+2 <= (self.width-1):
+            if not self.agents[x-2][y+2] == '':
+                full_spots += 1
+        # Highest left
+        if x-1 >= 0 and y+2 <= (self.width-1):
+            if not self.agents[x-1][y+2] == '': 
+                full_spots += 1
+        # Highest
+        if x >= 0 and y+2 <= (self.width-1):
+            if not self.agents[x][y+2] == '':
+                full_spots += 1
+        # Highest right
+        if x+1 <= (self.height-1) and y+2 <= (self.width-1):
+            if not self.agents[x+1][y+2] == '':
+                full_spots += 1
+        # Highest rightest
+        if x+2 <= (self.height-1) and y+2 <= (self.width-1):
+            if not self.agents[x+2][y+2] == '':
+                full_spots += 1
+        return full_spots
+    
+    def calculateCrowdDensity(self, x, y):
+        result = (self.nine_square_ring(x,y) + self.sixteen_square_ring(x,y))/24
+        # print("x,y: ", x, y)
+        # print("density percentage: ", result)
+        # print("density first ring: ", self.nine_square_ring(x,y))
+        # print("density second ring: ", self.sixteen_square_ring(x,y))
+        return result
+
+    def print_a_star_copy(self):
+        print("a star copy: ")
+        for row in self.a_star_copy:
+            print(row)
+    
+    # this function takes one agent as a parameter
+    # if it can find the first step the player should take, it returns a tuple of indices for that first step 
+    # (first step is the location that the agent wants to go to next)
+    def get_first_step(self, agent):
+        self.a_star_copy = copy.deepcopy(self.agents)
+        for i in range(len(self.a_star_copy)):
+            for j in range(len(self.a_star_copy[i])):
+                if self.a_star_copy[i][j] == '':
+                    self.a_star_copy[i][j] = 0
+                else:
+                    self.a_star_copy[i][j] = 1
+                
+        # calculate the shortest path from this
+        A_star = A_Star(self.height, self.width)
+        firstStep = A_star.a_star_search(self.a_star_copy, [agent.position['y'], agent.position['x']])
+        return firstStep
+>>>>>>> Stashed changes
 
     def move_locations(self):
         total_distance = 0
@@ -425,9 +562,13 @@ def main():
     ##Starter Simulation
     weightDistribution = {"mean": 160, "sd": 20}  # not facts idk what weight distribution is
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     stampede = Stampede(10, 10, 0.7, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
 =======
     stampede = Stampede(15, 15, 0.5, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
+>>>>>>> Stashed changes
+=======
+    stampede = Stampede(8, 10, 0.8, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
 >>>>>>> Stashed changes
     stampede.populate()
 
@@ -435,8 +576,15 @@ def main():
 
     # stampede.move_locations()
 
+<<<<<<< Updated upstream
     # stampede.plot('Stampede Model: Final State',
     #                  'stampede_final.png')
+=======
+    stampede.results(stampede.allAgents)
+
+    stampede.plot('Stampede Model: Final State',
+                        'stampede_final.png')
+>>>>>>> Stashed changes
 
 
 if __name__ == "__main__":
