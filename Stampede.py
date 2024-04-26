@@ -316,17 +316,15 @@ class Stampede:
 
     def plot(self, title, file_name):
         fig, ax = plt.subplots()
-        agentColor = 'r'
         marker_size = 150 / self.width  # no logic here, I just played around with it
-        for row in self.agents:
-            for agent in row:
-                if (agent != ''):
-                    if agent.fallen:
-                        agentColor = 'b'
-                    if not agent.alive:
-                        agentColor = 'g'
-                    ax.scatter(agent.position['x'] + 0.5, agent.position['y'] + 0.5, s=marker_size,
-                               color=agentColor)  # TODO: CHANGE THIS TO BE COLORED BASED ON AGENT, NOT JUST RED ACROSS THE BOARD
+        for agent in self.allAgents:
+            agentColor = 'r'
+            if agent.fallen:
+                agentColor = 'b'
+            if not agent.alive:
+                agentColor = 'g'
+            ax.scatter(agent.position['x'] + 0.5, agent.position['y'] + 0.5, s=marker_size,
+                        color=agentColor)  # TODO: CHANGE THIS TO BE COLORED BASED ON AGENT, NOT JUST RED ACROSS THE BOARD
 
         ax.set_title(title, fontsize=10, fontweight='bold')
         ax.set_xlim([0, self.width])
@@ -342,8 +340,8 @@ class Stampede:
     # returns the strategy for each in the same order they were passed in
     # for example, play_normal_form_game(agent1, agent2) would return agent1Strategy, agent2Strategy
     def play_normal_form_game(self, agent1, agent2):
-        agent1_rational = agent1.isRational(self.calculateCrowdDensity(agent1.position['x'], agent1.position['y']))
-        agent2_rational = agent2.isRational(self.calculateCrowdDensity(agent2.position['x'], agent2.position['y']))
+        agent1_rational = agent1.isRational(self.calculateCrowdDensity(agent1.position['y'], agent1.position['x']))
+        agent2_rational = agent2.isRational(self.calculateCrowdDensity(agent2.position['y'], agent2.position['x']))
 
         if agent1_rational and agent1.weight < agent2.weight and agent2_rational and agent2.weight > agent1.weight:
             # Outcome for you: rational, weak; he: rational, strong
