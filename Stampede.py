@@ -8,20 +8,24 @@ You will need to set up pycharm to import matplotlib.
 
 import matplotlib.pyplot as plt
 import itertools
+import datetime
 import random
 import copy
 from Agent import Agent
 from A_star import Cell, A_Star
 
+# we need to return the number of agents that fell and the number that died 
+# show an image every few steps
+
 class Stampede:
     def __init__(self, width, height, fullRatio, n_iterations, weightDistribution):
-        # self.agents = []                              # array: holds all agents               # TODO: RIGHT NOW THIS IS AN ARRAY, USED TO BE STORED IN {}; DECIDE IF THIS IS A GOOD DECISION OR IF IT SHOULD BE {}
         self.width = width                              # int: width of the grid I think
         self.height = height                            # int: height of the grid I think
         self.totalCells = width * height
         self.fullRatio = fullRatio                      # float
         self.n_iterations = n_iterations                # int
         self.weightDistribution = weightDistribution    # dictionary: { "mean": int, "sd": int }
+        self.allAgents = []
         # all agents just need to get to row 0
 
     def populate(self):
@@ -35,9 +39,9 @@ class Stampede:
         for _ in range(numPlayerCells):
             while True:
                 agentWeight = random.gauss(self.weightDistribution["mean"], self.weightDistribution["sd"])  # give the agent a normally-distributed weight based on given mean and sd
-                rational = True                 # TODO: CHANGE THIS TO BE BASED ON SOMETHING, NOT JUST TRUE ACROSS THE BOARD?
-                stepTime = 1                    # TODO: CHANGE THIS TO BE BASED ON SOMETHING, NOT JUST 1 FOR EVERY AGENT?
-                panicThreshold = 0.7            # TODO: CHANGE THIS TO BE BASED ON SOMETHING, NOT JUST 0.7 FOR EVERY AGENT?
+                rational = True                 
+                stepTime = 1                    
+                panicThreshold = 0.7            
                 
                 newAgent = Agent(agentWeight, rational, stepTime, panicThreshold) 
 
@@ -46,6 +50,7 @@ class Stampede:
 
                 if self.agents[y][x] == '':
                     self.agents[y][x] = newAgent  # fill a random "empty" spot in the array with a new agent
+                    # self.allAgents.append
                     newAgent.position['x'] = x
                     newAgent.position['y'] = y
                     break
@@ -53,35 +58,35 @@ class Stampede:
         full_spots = 0
         # Lower left square
         if x > 0 and y > 0:
-            if not A_Star.is_unblocked(self.agents, x-1, y-1):
+            if not self.agents[x-1][y-1] == '':
                 full_spots += 1
         # Lower Square
         if y > 0:
-            if not A_Star.is_unblocked(self.agents, x, y-1):
+            if not self.agents[x][y-1] == '':
                 full_spots += 1
         # Lower right square
         if x < (self.width - 1) and y > 0:
-            if not A_Star.is_unblocked(self.agents, x+1, y-1):
+            if not self.agents[x+1][y-1] == '':
                 full_spots += 1
         # Left square
         if x > 0:
-            if not A_Star.is_unblocked(self.agents, x-1, y):
+            if not self.agents[x-1][y] == '':
                 full_spots += 1
         # Right square
         if x < (self.width - 1):
-            if not A_Star.is_unblocked(self.agents, x+1, y):
+            if not self.agents[x+1][y] == '':
                 full_spots += 1
         # Upper Left square
         if x > 0 and y < (self.height - 1):
-            if not A_Star.is_unblocked(self.agents, x-1, y+1):
+            if not self.agents[x-1][y+1] == '':
                 full_spots += 1
         # Upper square
         if x > 0 and y < (self.height - 1):
-            if not A_Star.is_unblocked(self.agents, x, y+1):
+            if not self.agents[x][y+1] == '':
                 full_spots += 1
         # Upper right square
         if x < (self.width - 1) and y < (self.height - 1):
-            if not A_Star.is_unblocked(self.agents, x+1, y+1):
+            if not self.agents[x+1][y+1] == '':
                 full_spots += 1
         return full_spots
     
@@ -90,67 +95,67 @@ class Stampede:
         full_spots = 0
         # Lowest leftest
         if x-2 >= 0 and y-2 >= 0:
-            if not A_Star.is_unblocked(self.agents, x-2, y-2):
+            if not self.agents[x-2][-2] == '':
                 full_spots += 1
         # Lowest left
         if x-1 >= 0 and y-2 >= 0:
-            if not A_Star.is_unblocked(self.agents, x-1, y-2):
+            if not self.agents[x-1][y-2] == '':
                 full_spots += 1
         # Lowest
         if x >= 0 and y-2 >= 0:
-            if not A_Star.is_unblocked(self.agents, x, y-2):
+            if not self.agents[x][y-2] == '': 
                 full_spots += 1
         # Lowest right
         if x+1 <= (self.width-1) and y-2 >= 0:
-            if not A_Star.is_unblocked(self.agents, x+1, y-2):
+            if not self.agents[x+1][y-2] == '':
                 full_spots += 1
         # Lowest rightest
         if x+2 <= (self.width-1) and y-2 >= 0:
-            if not A_Star.is_unblocked(self.agents, x+2, y-2):
+            if not self.agents[x+2][y-2] == '':
                 full_spots += 1
         # Lower leftest
         if x-2 >= 0 and y-1 >= 0:
-            if not A_Star.is_unblocked(self.agents, x-2, y-1):
+            if not self.agents[x-2][y-1] == '':
                 full_spots += 1
         # Lower rightest
         if x+2 <= (self.width-1) and y-1 >= 0:
-            if not A_Star.is_unblocked(self.agents, x+2, y-1):
+            if not self.agents[x+2][y-1] == '':
                 full_spots += 1
         # Leftest
         if x-2 >= 0 and y >= 0:
-            if not A_Star.is_unblocked(self.agents, x-2, y):
+            if not self.agents[x-2][y] == '':
                 full_spots += 1
         # Rightest
         if x+2 <= (self.width-1) and y >= 0:
-            if not A_Star.is_unblocked(self.agents, x+2, y):
+            if not self.agents[x+2][y] == '':
                 full_spots += 1
         # Higher leftest
         if x-2 >= 0 and y+1 <= (self.height-1):
-            if not A_Star.is_unblocked(self.agents, x-2, y+1):
+            if not self.agents[x-2][y-2] == '':
                 full_spots += 1
         # Higher rightest
         if x+2 <= (self.width-1) and y+1 <= (self.height-1):
-            if not A_Star.is_unblocked(self.agents, x+2, y+1):
+            if not self.agents[x+2][y+1] == '':
                 full_spots += 1
         # Highest leftest
         if x-2 >= 0 and y+2 <= (self.height-1):
-            if not A_Star.is_unblocked(self.agents, x-2, y+2):
+            if not self.agents[x-2][y+2] == '':
                 full_spots += 1
         # Highest left
         if x-1 >= 0 and y+2 <= (self.height-1):
-            if not A_Star.is_unblocked(self.agents, x-1, y+2):
+            if not self.agents[x-1][y+2] == '': 
                 full_spots += 1
         # Highest
         if x >= 0 and y+2 <= (self.height-1):
-            if not A_Star.is_unblocked(self.agents, x, y+2):
+            if not self.agents[x][y+2] == '':
                 full_spots += 1
         # Highest right
         if x+1 <= (self.width-1) and y+2 <= (self.height-1):
-            if not A_Star.is_unblocked(self.agents, x+1, y+2):
+            if not self.agents[x+1][y+2] == '':
                 full_spots += 1
         # Highest rightest
         if x+2 <= (self.width-1) and y+2 <= (self.height-1):
-            if not A_Star.is_unblocked(self.agents, x+2, y+2):
+            if not self.agents[x+2][y+2] == '':
                 full_spots += 1
         return full_spots
     
@@ -181,28 +186,30 @@ class Stampede:
         return firstStep
 
     def move_locations(self):
-        total_distance = 0
+        n_changes_counter = 0
+        round_counter = 0
         for i in range(self.n_iterations):
             self.old_agents = copy.deepcopy(self.agents)
             n_changes = 0
             
             for row in self.old_agents: # each player moves one-by-one
                 for agent in row:
-                    if agent != '': # if that spot isn't empty
+                    if agent != '' and agent.alive: # if that spot isn't empty
                         print("agent coords: ", agent.position)
                         firstStep = self.get_first_step(agent)
 
                         if firstStep == None: # if the agent can't find a path to where they want to go
                             # move forward, or if you can't, then vvv
                             # play a normal-form game with the person in front of them
-                            if agent.position['y'] < self.height - 1:  # if agent is not at the bottom row 
+                            if agent.position['y'] != 0:  # if agent is not at the bottom row 
+                                other_agent = self.agents[agent.position['y'] + 1][agent.position['x']]
                                 if self.agents[agent.position['y'] + 1][agent.position['x']] == '':
                                     # Move the agent forward if space is empty
                                     self.agents[agent.position['y'] + 1][agent.position['x']] = agent
                                     self.agents[agent.position['y']][agent.position['x']] = ''
-                                else:
+                                    n_changes += 1  # Increment the change counter
+                                elif self.agents[agent.position['y'] + 1][agent.position['x']] != '' and other_agent.alive:
                                     # Play a normal-form game
-                                    other_agent = self.agents[agent.position['y'] + 1][agent.position['x']]
                                     agent_strategy, other_agent_strategy = self.play_normal_form_game(agent, other_agent)
                                     # game results 
                                     if agent_strategy == 'queue' and other_agent_strategy == 'push':
@@ -225,12 +232,10 @@ class Stampede:
                                             # if other agent has fallen twice then they die and don't move on the map
                                             if other_agent.timesTrampled == 2:
                                                 other_agent.alive = False
-                                                other_agent.position['y'] = None
-                                                other_agent.position['x'] = None
-                                            else:
-                                                self.agents[agent_starting_y][agent_starting_x] = other_agent
-                                                other_agent.position['y'] = agent_starting_y
-                                                other_agent.position['x'] = agent_starting_x
+                                            self.agents[agent_starting_y][agent_starting_x] = other_agent
+                                            other_agent.position['y'] = agent_starting_y
+                                            other_agent.position['x'] = agent_starting_x
+                                            n_changes += 1  # Increment the change counter
                                         continue
                                     elif agent_strategy == 'push' and other_agent_strategy == 'push':
                                         # the agent that weighs more will win
@@ -250,12 +255,11 @@ class Stampede:
                                             # if other agent has fallen twice then they die and don't move on the map
                                             if other_agent.timesTrampled == 2:
                                                 other_agent.alive = False
-                                                other_agent.position['y'] = None
-                                                other_agent.position['x'] = None
-                                            else:
-                                                self.agents[agent_starting_y][agent_starting_x] = other_agent
-                                                other_agent.position['y'] = agent_starting_y
-                                                other_agent.position['x'] = agent_starting_x
+                                            self.agents[agent_starting_y][agent_starting_x] = other_agent
+                                            other_agent.position['y'] = agent_starting_y
+                                            other_agent.position['x'] = agent_starting_x
+
+                                            n_changes += 1  # Increment the change counter
                                         elif agent.weight < other_agent.weight:  # Check if the other agent weighs more
                                             # If the other agent weighs more, no action needed, continue to the next agent
                                             continue
@@ -263,15 +267,47 @@ class Stampede:
                                     elif agent_strategy == 'queue' and other_agent_strategy == 'queue':
                                         # if they both queue, nothing happens
                                         continue
+                                else:
+                                    target_y = other_agent.position['y']
+                                    target_x = other_agent.position['x']
+                                    agent_starting_y = agent.position['y']
+                                    agent_starting_x = agent.position['x']
+                                    other_agent.position['y'] = agent_starting_y
+                                    other_agent.position['x'] = agent_starting_x
+                                    self.agents[target_y][target_x] = agent
+                                    self.agents[agent_starting_y][agent_starting_x] = other_agent
+                                
+                                    n_changes += 1  # Increment the change counter
+
+                            elif self.agents[agent.position['x']][agent.position['y']] != '':
+                                # remove from agent list 
+                                self.agents[agent.position['x']][agent.position['y']] = ''
+                                n_changes += 1  # Increment the change counter
+                            else:
+                                # has already been removed, do nothing
+                                continue
+
                         else:
-                            print("agent's first step is: ", firstStep) # this is in row, col order, so it'll look backwards to us
                             self.agents[agent.position['y']][agent.position['x']] = ''
                             self.agents[firstStep[0]][firstStep[1]] = agent
                             agent.position['y'] = firstStep[0]
                             agent.position['x'] = firstStep[1]
-                
+                            n_changes += 1  # Increment the change counter
+
+            round_counter += 1    
+            
             if n_changes == 0:
+                n_changes_counter += 1
+            else:
+                n_changes_counter = 0  # Reset the counter if changes were made
+
+            # Check if no changes were made in consecutive iterations
+            if n_changes_counter == 2:
                 break
+            
+            if round_counter % 5 == 0:
+                timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+                self.plot('Stampede Model: move ' + str(timestamp), 'move_' + timestamp + '.png')
 
     def plot(self, title, file_name):
         fig, ax = plt.subplots()
@@ -293,6 +329,7 @@ class Stampede:
         ax.set_xticks([])
         ax.set_yticks([])
         plt.savefig(file_name)
+        plt.close()
 
         return
     
@@ -300,7 +337,10 @@ class Stampede:
     # returns the strategy for each in the same order they were passed in
     # for example, play_normal_form_game(agent1, agent2) would return agent1Strategy, agent2Strategy
     def play_normal_form_game(self, agent1, agent2):
-        if agent1.isRational() and agent1.weight < agent2.weight and agent2.isRational() and agent2.weight > agent1.weight:
+        agent1_rational = agent1.isRational(self.calculateCrowdDensity(agent1.position['x'], agent1.position['y']))
+        agent2_rational = agent2.isRational(self.calculateCrowdDensity(agent2.position['x'], agent2.position['y']))
+
+        if agent1_rational and agent1.weight < agent2.weight and agent2_rational and agent2.weight > agent1.weight:
             # Outcome for you: rational, weak; he: rational, strong
             outcomes = {
                 ('queue', 'queue'): (0.8, 0.8),
@@ -308,17 +348,17 @@ class Stampede:
                 ('push', 'queue'): (0.2, 0.7),
                 ('push', 'push'): (0.1, 0.3)
             }
-            if agent1.isRational():
+            if agent1_rational:
                 strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
             else:
                 strategy1 = 'push'
-            if agent2.isRational():
+            if agent1_rational:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
             return strategy1, strategy2
         
-        if agent1.isRational() and agent1.weight > agent2.weight and agent2.isRational() and agent2.weight < agent1.weight:
+        if agent1_rational and agent1.weight > agent2.weight and agent2_rational and agent2.weight < agent1.weight:
             # Outcome for you: rational, strong; he: rational, weak
             outcomes = {
                 ('queue', 'queue'): (0.7, 0.8),
@@ -326,17 +366,17 @@ class Stampede:
                 ('push', 'queue'): (0.5, 0.6),
                 ('push', 'push'): (0.4, 0.1)
             }
-            if agent1.isRational():
+            if agent1_rational:
                 strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
             else:
                 strategy1 = 'push'
-            if agent2.isRational():
+            if agent2_rational:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
             return strategy1, strategy2
 
-        if not agent1.isRational() and not agent2.isRational() and agent1.weight < agent2.weight:
+        if not agent1_rational and not agent2_rational and agent1.weight < agent2.weight:
             # Outcome for you: irrational, weak; he: irrational, strong
             outcomes = {
                 ('queue', 'queue'): (0.4, 0.3),
@@ -344,17 +384,17 @@ class Stampede:
                 ('push', 'queue'): (0.5, 0.3),
                 ('push', 'push'): (0.7, 0.5)
             }
-            if agent1.isRational():
+            if agent1_rational:
                 strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
             else:
                 strategy1 = 'push'
-            if agent2.isRational():
+            if agent2_rational:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
             return strategy1, strategy2
 
-        if not agent1.isRational() and not agent2.isRational() and agent1.weight > agent2.weight:
+        if not agent1_rational and not agent2_rational and agent1.weight > agent2.weight:
             # Outcome for you: irrational, strong; he: irrational, weak
             outcomes = {
                 ('queue', 'queue'): (0.3, 0.4),
@@ -362,17 +402,17 @@ class Stampede:
                 ('push', 'queue'): (0.7, 0.3),
                 ('push', 'push'): (0.7, 0.5)
             }
-            if agent1.isRational():
+            if agent1_rational:
                 strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
             else:
                 strategy1 = 'push'
-            if agent2.isRational():
+            if agent2_rational:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
             return strategy1, strategy2
 
-        if not agent1.isRational() and agent2.isRational() and agent2.weight > agent1.weight:
+        if not agent1_rational and agent2_rational and agent2.weight > agent1.weight:
             # Outcome for you: irrational, weak; he: rational, strong
             outcomes = {
                 ('queue', 'queue'): (0.4, 0.9),
@@ -380,17 +420,17 @@ class Stampede:
                 ('push', 'queue'): (0.5, 0.8),
                 ('push', 'push'): (0.5, 0.4)
             }
-            if agent1.isRational():
+            if agent1_rational:
                 strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
             else:
                 strategy1 = 'push'
-            if agent2.isRational():
+            if agent2_rational:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
             return strategy1, strategy2
 
-        if not agent1.isRational() and agent2.isRational() and agent2.weight < agent1.weight:
+        if not agent1_rational and agent2_rational and agent2.weight < agent1.weight:
             # Outcome for you: irrational, strong; he: rational, weak
             outcomes = {
                 ('queue', 'queue'): (0.3, 0.8),
@@ -398,17 +438,17 @@ class Stampede:
                 ('push', 'queue'): (0.7, 0.5),
                 ('push', 'push'): (0.6, 0.3)
             }
-            if agent1.isRational():
+            if agent1_rational:
                 strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
             else:
                 strategy1 = 'push'
-            if agent2.isRational():
+            if agent2_rational:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
             return strategy1, strategy2
 
-        if agent1.isRational() and not agent2.isRational() and agent1.weight > agent2.weight:
+        if agent1_rational and not agent2_rational and agent1.weight > agent2.weight:
             # Outcome for you: rational, strong; he: irrational, weak
             outcomes = {
                 ('queue', 'queue'): (0.7, 0.4),
@@ -416,17 +456,17 @@ class Stampede:
                 ('push', 'queue'): (0.5, 0.3),
                 ('push', 'push'): (0.5, 0.4)
             }
-            if agent1.isRational():
+            if agent1_rational:
                 strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
             else:
                 strategy1 = 'push'
-            if agent2.isRational():
+            if agent2_rational:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
             return strategy1, strategy2
 
-        if agent1.isRational() and not agent2.isRational() and agent1.weight < agent2.weight:
+        if agent1_rational and not agent2_rational and agent1.weight < agent2.weight:
             # Outcome for you: rational, weak; he: irrational, strong
             outcomes = {
                 ('queue', 'queue'): (0.8, 0.3),
@@ -434,17 +474,17 @@ class Stampede:
                 ('push', 'queue'): (0.3, 0.4),
                 ('push', 'push'): (0.1, 0.6)
             }
-            if agent1.isRational():
+            if agent1_rational:
                 strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
             else:
                 strategy1 = 'push'
-            if agent2.isRational():
+            if agent2_rational:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
             return strategy1, strategy2
 
-        if agent1.isRational() and agent2.isRational() and agent1.weight == agent2.weight:
+        if agent1_rational and agent2_rational and agent1.weight == agent2.weight:
             # Outcome for you: rational; he: rational; Strong or weak
             outcomes = {
                 ('queue', 'queue'): (0.9, 0.9),
@@ -452,17 +492,17 @@ class Stampede:
                 ('push', 'queue'): (0.3, 0.7),
                 ('push', 'push'): (0.1, 0.1)
             }
-            if agent1.isRational():
+            if agent1_rational:
                 strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
             else:
                 strategy1 = 'push'
-            if agent2.isRational():
+            if agent2_rational:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
             return strategy1, strategy2
 
-        if agent1.isRational() and not agent2.isRational() and agent1.weight == agent2.weight:
+        if agent1_rational and not agent2_rational and agent1.weight == agent2.weight:
             # Outcome for you: rational; he: irrational; Strong or weak
             outcomes = {
                 ('queue', 'queue'): (0.8, 0.4),
@@ -470,17 +510,17 @@ class Stampede:
                 ('push', 'queue'): (0.5, 0.3),
                 ('push', 'push'): (0.2, 0.5)
             }
-            if agent1.isRational():
+            if agent1_rational:
                 strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
             else:
                 strategy1 = 'push'
-            if agent2.isRational():
+            if agent2_rational:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
             return strategy1, strategy2
 
-        if not agent1.isRational() and agent2.isRational() and agent1.weight == agent2.weight:
+        if not agent1_rational and agent2_rational and agent1.weight == agent2.weight:
             # Outcome for you: irrational; he: rational; Strong or weak
             outcomes = {
                 ('queue', 'queue'): (0.4, 0.8),
@@ -488,17 +528,17 @@ class Stampede:
                 ('push', 'queue'): (0.3, 0.5),
                 ('push', 'push'): (0.5, 0.2)
             }
-            if agent1.isRational():
+            if agent1_rational:
                 strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
             else:
                 strategy1 = 'push'
-            if agent2.isRational():
+            if agent2_rational:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
             return strategy1, strategy2
 
-        if not agent1.isRational() and not agent2.isRational() and agent1.weight == agent2.weight:
+        if not agent1_rational and not agent2_rational and agent1.weight == agent2.weight:
             # Outcome for you: irrational; he: irrational; Strong or weak
             outcomes = {
                 ('queue', 'queue'): (0.4, 0.4),
@@ -506,11 +546,11 @@ class Stampede:
                 ('push', 'queue'): (0.6, 0.4),
                 ('push', 'push'): (0.6, 0.6)
             }
-            if agent1.isRational():
+            if agent1_rational:
                 strategy1 = 'queue' if outcomes[('queue', 'queue')][0] > outcomes[('push', 'queue')][0] else 'push'
             else:
                 strategy1 = 'push'
-            if agent2.isRational():
+            if agent2_rational:
                 strategy2 = 'queue' if outcomes[('queue', 'queue')][1] > outcomes[('queue', 'push')][1] else 'push'
             else:
                 strategy2 = 'push'
@@ -531,8 +571,8 @@ def main():
 
     # stampede.move_locations()
 
-    # stampede.plot('Stampede Model: Final State',
-    #                  'stampede_final.png')
+    stampede.plot('Stampede Model: Final State',
+                     'stampede_final.png')
 
 
 if __name__ == "__main__":

@@ -77,6 +77,7 @@ class A_Star:
         path.append((row, col))
         # Reverse the path to get the path from source to destination
         path.reverse()
+        return path[1]
     
     # Implement the A* search algorithm
     # takes only grid and starting point as params, will find fastest to row 0 around the obstacles
