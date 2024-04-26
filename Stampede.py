@@ -153,8 +153,12 @@ class Stampede:
         return full_spots
     
     def calculateCrowdDensity(self, x, y):
-        return (self.nine_square_ring(x,y) + self.sixteen_square_ring(x,y))/24
-    
+        result = (self.nine_square_ring(x,y) + self.sixteen_square_ring(x,y))/24
+        print("x,y: ", x, y)
+        print("density percentage: ", result)
+        print("denisty first ring: ", self.nine_square_ring(x,y))
+        print("density second ring: ", self.sixteen_square_ring(x,y))
+        return result
 
     def print_a_star_copy(self):
         print("a star copy: ")
@@ -336,8 +340,8 @@ class Stampede:
     # returns the strategy for each in the same order they were passed in
     # for example, play_normal_form_game(agent1, agent2) would return agent1Strategy, agent2Strategy
     def play_normal_form_game(self, agent1, agent2):
-        agent1_rational = agent1.isRational(self.calculateCrowdDensity(agent1.position['x'], agent1.position['y']))
-        agent2_rational = agent2.isRational(self.calculateCrowdDensity(agent2.position['x'], agent2.position['y']))
+        agent1_rational = agent1.isRational(self.calculateCrowdDensity(agent1.position['y'], agent1.position['x']))
+        agent2_rational = agent2.isRational(self.calculateCrowdDensity(agent2.position['y'], agent2.position['x']))
 
         if agent1_rational and agent1.weight < agent2.weight and agent2_rational and agent2.weight > agent1.weight:
             # Outcome for you: rational, weak; he: rational, strong
@@ -586,18 +590,14 @@ class Stampede:
 def main():
     ##Starter Simulation
     weightDistribution = {"mean": 160, "sd": 20}  # not facts idk what weight distribution is
-    stampede = Stampede(10, 10, 0.5, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
+    stampede = Stampede(8, 10, 0.5, 200, weightDistribution)  # TODO: CHANGE THIS EVENTUALLY TO A BIGGER ARRAY :)
     stampede.populate()
 
     stampede.plot('Stampede Model: Initial State', 'stampede_initial.png')
 
     stampede.move_locations()
 
-    # stampede.print_a_star_copy()
-    # print(stampede.agents[1])
-    stampede.results(stampede.allAgents)
-
-    # stampede.move_locations()
+    # stampede.results(stampede.allAgents)
 
     stampede.plot('Stampede Model: Final State',
                         'stampede_final.png')
